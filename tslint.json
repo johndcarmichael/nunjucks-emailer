@@ -1,7 +1,7 @@
 {
   "extends": "tslint:recommended",
   "linterOptions": {
-    "exclude": ["src/http/nodegen/**/*", "src/domains/__mocks__/**/*"]
+    "exclude": ["__tests__/**.*"]
   },
   "rules": {
     "object-literal-shorthand": false,
@@ -68,6 +68,7 @@
       }
     ],
     "interface-name": false,
+    "no-string-literal": false,
     "no-console": false,
     "no-internal-module": true,
     "no-trailing-whitespace": true,
