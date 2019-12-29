@@ -1,8 +1,6 @@
 import path from 'path';
-import Emailer from '@/Emailer';
 import { EmailerSendTypes } from '@/enums/EmailerSendTypes';
-import EmailerSetupSync from '@/EmailerSetupSync';
-import EmailerSetupAsync from '@/EmailerSetupAsync';
+import { EmailerSetupSync, EmailerSetupAsync, Emailer } from '@/index';
 import fs from 'fs-extra';
 
 const logPath = path.join(process.cwd(), 'src/__tests__/log');

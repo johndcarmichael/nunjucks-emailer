@@ -1,4 +1,4 @@
-# typescript-npm-package-tpl
+# Nunjucks Node Emailer
 
 Use this package to create a typescript based package for npm.
 
