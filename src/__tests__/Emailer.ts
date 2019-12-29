@@ -1,7 +1,8 @@
 import path from 'path';
 import { EmailerSendTypes } from '@/enums/EmailerSendTypes';
-import { EmailerSetupSync, EmailerSetupAsync, Emailer } from '@/index';
+import { emailerSetupSync, emailerSetupAsync, Emailer } from '@/index';
 import fs from 'fs-extra';
+import emailerSetup from '@/emailerSetup';
 
 const logPath = path.join(process.cwd(), 'src/__tests__/log');
 const to = 'john@john.com';
@@ -37,12 +38,13 @@ describe('Setup, render and return object correctly', () => {
   });
   it('should initialise correctly', async (done) => {
     try {
-      EmailerSetupSync({
+      emailerSetup({sendType: EmailerSendTypes.return});
+      emailerSetupSync({
         sendType: EmailerSendTypes.return,
         templatePath: path.join(process.cwd(), 'src/__tests__/templates'),
         logPath: logPath,
       });
-      await EmailerSetupAsync({
+      await emailerSetupAsync({
         sendType: EmailerSendTypes.return,
         templatePath: path.join(process.cwd(), 'src/__tests__/templates'),
         logPath: logPath,
@@ -75,7 +77,7 @@ describe('Setup, render and return object correctly', () => {
   });
 
   it('should write to file', async () => {
-    EmailerSetupSync({
+    emailerSetupSync({
       sendType: EmailerSendTypes.file,
       templatePath: path.join(process.cwd(), 'src/__tests__/templates'),
       logPath: logPath,
@@ -92,7 +94,7 @@ describe('Setup, render and return object correctly', () => {
   });
 
   it('should throw an error on bad log directory', async (done) => {
-    EmailerSetupSync({
+    emailerSetupSync({
       sendType: EmailerSendTypes.file,
       templatePath: '/',
       logPath: logPath,
@@ -106,11 +108,12 @@ describe('Setup, render and return object correctly', () => {
   });
 
   it('should return empty string for console mode', async () => {
-    EmailerSetupSync({
+    emailerSetupSync({
       sendType: EmailerSendTypes.log,
       templatePath: path.join(process.cwd(), 'src/__tests__/templates'),
       logPath: logPath,
     });
-    expect(await Emailer.send(to, from, subject, tplObject, tplRelPath)).toBe('');
+    const logFile = await Emailer.send(to, from, subject, tplObject, tplRelPath);
+    expect(fs.existsSync(logFile)).toBe(true);
   });
 });

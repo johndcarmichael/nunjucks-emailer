@@ -53,22 +53,22 @@ class Emailer {
   }
 
   private async sendTo (sendObject: EmailerSendObject) {
-    return new Promise((resolve, reject) => {
+    return new Promise((resolve) => {
       switch (global.OPENAPI_NODEGEN_EMAILER_SEND_TYPE) {
         case EmailerSendTypes.sendgrid:
           sgMail.setApiKey(process.env.SENDGRID_API_KEY);
           return resolve(sgMail.send(sendObject));
+        case EmailerSendTypes.return:
+          return resolve(sendObject);
+        case EmailerSendTypes.log:
+          console.log(sendObject);
+          // don't break here as log and file should write log to disk.
         case EmailerSendTypes.file:
           const filePath = this.calculateLogFilePath(sendObject.tplRelativePath);
           fs.writeFile(filePath, JSON.stringify(sendObject), 'utf8', () => {
             return resolve(filePath);
           });
           break;
-        case EmailerSendTypes.return:
-          return resolve(sendObject);
-        case EmailerSendTypes.log:
-          console.log(sendObject);
-          return resolve('');
       }
     });
   }

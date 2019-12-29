@@ -1,6 +1,8 @@
 import Emailer from "./Emailer";
-import EmailerSetupAsync from "./EmailerSetupAsync";
-import EmailerSetupSync from "./EmailerSetupSync";
+import emailerSetupAsync from "./emailerSetupAsync";
+import emailerSetupSync from "./emailerSetupSync";
+import { EmailerSendTypes } from "./enums/EmailerSendTypes";
 export { Emailer };
-export { EmailerSetupAsync };
-export { EmailerSetupSync };
+export { emailerSetupAsync };
+export { emailerSetupSync };
+export { EmailerSendTypes };

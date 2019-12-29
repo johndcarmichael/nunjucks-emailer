@@ -5,6 +5,7 @@ var path_1 = tslib_1.__importDefault(require("path"));
 var EmailerSendTypes_1 = require("../enums/EmailerSendTypes");
 var index_1 = require("../index");
 var fs_extra_1 = tslib_1.__importDefault(require("fs-extra"));
+var emailerSetup_1 = tslib_1.__importDefault(require("../emailerSetup"));
 var logPath = path_1["default"].join(process.cwd(), 'src/__tests__/log');
 var to = 'john@john.com';
 var from = 'bob@bob.com';
@@ -51,12 +52,13 @@ describe('Setup, render and return object correctly', function () {
             switch (_a.label) {
                 case 0:
                     _a.trys.push([0, 2, , 3]);
-                    index_1.EmailerSetupSync({
+                    emailerSetup_1["default"]({ sendType: EmailerSendTypes_1.EmailerSendTypes["return"] });
+                    index_1.emailerSetupSync({
                         sendType: EmailerSendTypes_1.EmailerSendTypes["return"],
                         templatePath: path_1["default"].join(process.cwd(), 'src/__tests__/templates'),
                         logPath: logPath
                     });
-                    return [4 /*yield*/, index_1.EmailerSetupAsync({
+                    return [4 /*yield*/, index_1.emailerSetupAsync({
                             sendType: EmailerSendTypes_1.EmailerSendTypes["return"],
                             templatePath: path_1["default"].join(process.cwd(), 'src/__tests__/templates'),
                             logPath: logPath
@@ -115,7 +117,7 @@ describe('Setup, render and return object correctly', function () {
         return tslib_1.__generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
-                    index_1.EmailerSetupSync({
+                    index_1.emailerSetupSync({
                         sendType: EmailerSendTypes_1.EmailerSendTypes.file,
                         templatePath: path_1["default"].join(process.cwd(), 'src/__tests__/templates'),
                         logPath: logPath
@@ -135,7 +137,7 @@ describe('Setup, render and return object correctly', function () {
         return tslib_1.__generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
-                    index_1.EmailerSetupSync({
+                    index_1.emailerSetupSync({
                         sendType: EmailerSendTypes_1.EmailerSendTypes.file,
                         templatePath: '/',
                         logPath: logPath
@@ -157,19 +159,19 @@ describe('Setup, render and return object correctly', function () {
         });
     }); });
     it('should return empty string for console mode', function () { return tslib_1.__awaiter(void 0, void 0, void 0, function () {
-        var _a;
-        return tslib_1.__generator(this, function (_b) {
-            switch (_b.label) {
+        var logFile;
+        return tslib_1.__generator(this, function (_a) {
+            switch (_a.label) {
                 case 0:
-                    index_1.EmailerSetupSync({
+                    index_1.emailerSetupSync({
                         sendType: EmailerSendTypes_1.EmailerSendTypes.log,
                         templatePath: path_1["default"].join(process.cwd(), 'src/__tests__/templates'),
                         logPath: logPath
                     });
-                    _a = expect;
                     return [4 /*yield*/, index_1.Emailer.send(to, from, subject, tplObject, tplRelPath)];
                 case 1:
-                    _a.apply(void 0, [_b.sent()]).toBe('');
+                    logFile = _a.sent();
+                    expect(fs_extra_1["default"].existsSync(logFile)).toBe(true);
                     return [2 /*return*/];
             }
         });

@@ -64,22 +64,22 @@ var Emailer = /** @class */ (function () {
         return tslib_1.__awaiter(this, void 0, void 0, function () {
             var _this = this;
             return tslib_1.__generator(this, function (_a) {
-                return [2 /*return*/, new Promise(function (resolve, reject) {
+                return [2 /*return*/, new Promise(function (resolve) {
                         switch (global.OPENAPI_NODEGEN_EMAILER_SEND_TYPE) {
                             case EmailerSendTypes_1.EmailerSendTypes.sendgrid:
                                 mail_1["default"].setApiKey(process.env.SENDGRID_API_KEY);
                                 return resolve(mail_1["default"].send(sendObject));
+                            case EmailerSendTypes_1.EmailerSendTypes["return"]:
+                                return resolve(sendObject);
+                            case EmailerSendTypes_1.EmailerSendTypes.log:
+                                console.log(sendObject);
+                            // don't break here as log and file should write log to disk.
                             case EmailerSendTypes_1.EmailerSendTypes.file:
                                 var filePath_1 = _this.calculateLogFilePath(sendObject.tplRelativePath);
                                 fs_1["default"].writeFile(filePath_1, JSON.stringify(sendObject), 'utf8', function () {
                                     return resolve(filePath_1);
                                 });
                                 break;
-                            case EmailerSendTypes_1.EmailerSendTypes["return"]:
-                                return resolve(sendObject);
-                            case EmailerSendTypes_1.EmailerSendTypes.log:
-                                console.log(sendObject);
-                                return resolve('');
                         }
                     })];
             });
