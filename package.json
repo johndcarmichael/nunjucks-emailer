@@ -7,7 +7,7 @@
   "scripts": {
     "install:githooks": "cp ./githooks/* .git/hooks",
     "test": "npm run lint && npm run test:unit",
-    "test:unit": "npm run build && jest",
+    "test:unit": "jest",
     "test:unit:single": "jest --collect-coverage false",
     "lint": "tslint --project tsconfig.json",
     "lint:fix": "tslint --project tsconfig.json --fix",
@@ -15,7 +15,7 @@
     "build": "rm -fR ./build && ttsc -p . -d --declarationDir build",
     "build:watch": "ttsc --watch -p .",
     "start": "node cli.js",
-    "prepublishOnly": "npm run lint && npm run test"
+    "prepublishOnly": "npm run lint && npm run build && npm run test"
   },
   "repository": {
     "type": "git",
