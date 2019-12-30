@@ -5,7 +5,7 @@ import EmailerSendObject from '@/interfaces/EmailerSendObject';
 import nunjucks from 'nunjucks';
 import { EmailerSendTypes } from '@/enums/EmailerSendTypes';
 interface EmailerSend {
-  to: string, from?: string, subject: string, tplObject?: any, tplRelativePath: string
+  to: string; from?: string; subject: string; tplObject?: any; tplRelativePath: string;
 }
 class Emailer {
   public async send (emailerSend: EmailerSend): Promise<any> {
