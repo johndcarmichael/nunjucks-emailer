@@ -90,7 +90,7 @@ Emailer.send('john@john.com', 'bob@bob.com', 'Welcome', {name: 'John'}, 'welcome
 
 ## Unit test example
 
-Check the source code of this package: [src/__tests__/Emailer.ts](https://github.com/johndcarmichael/openapi-nodegen-emailer/blob/master/src/__tests__/Emailer.ts)
+Check the source code of this package: [src/__tests__/Emailer.spec.ts](https://github.com/johndcarmichael/openapi-nodegen-emailer/blob/master/src/__tests__/Emailer.ts)
 
 As it is possible to return the prepared object from this tool it makes it possible to unit test a domain method very easily, just run the setup and instruct to write to file, log or return the object, eg:
 

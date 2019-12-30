@@ -14,19 +14,12 @@ module.exports = {
   transform: {
     '^.+\\.tsx?$': 'ts-jest'
   },
-  testPathIgnorePatterns: [
-    '/node_modules/',
-    '/build/',
-  ],
-  transformIgnorePatterns: [
-    '/node_modules/',
-    '/build/'
-  ],
+  transformIgnorePatterns: ['/node_modules/'],
   moduleNameMapper: {
     '^@/(.*)$': '<rootDir>/src/$1'
   },
   testMatch: [
-    '**/__tests__/*.ts',
+    '**/__tests__/*.spec.ts',
   ],
   testURL: 'http://localhost/',
 }
