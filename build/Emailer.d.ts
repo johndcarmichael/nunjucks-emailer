@@ -1,10 +1,4 @@
-interface EmailerSend {
-    to: string;
-    from?: string;
-    subject: string;
-    tplObject?: any;
-    tplRelativePath: string;
-}
+import EmailerSend from "./interfaces/EmailerSend";
 declare class Emailer {
     send(emailerSend: EmailerSend): Promise<any>;
     private hasBeenInitialized;

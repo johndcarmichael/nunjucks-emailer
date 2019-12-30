@@ -4,5 +4,5 @@ import EmailerSetup from '@/emailerSetup';
 
 export default (emailerConstructor: EmailerConstructor): void => {
   EmailerSetup(emailerConstructor);
-  fs.ensureDirSync(global.OPENAPI_NODEGEN_EMAILER_LOG_PATH);
+  fs.ensureDirSync(global.OPENAPI_NODEGEN_EMAILER_SETTINGS.logPath);
 };

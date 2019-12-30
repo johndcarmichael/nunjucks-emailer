@@ -4,5 +4,5 @@ import EmailerSetup from '@/emailerSetup';
 
 export default (emailerConstructor: EmailerConstructor): Promise<void> => {
   EmailerSetup(emailerConstructor);
-  return fs.ensureDir(global.OPENAPI_NODEGEN_EMAILER_LOG_PATH);
+  return fs.ensureDir(global.OPENAPI_NODEGEN_EMAILER_SETTINGS.logPath);
 };

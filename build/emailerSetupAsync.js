@@ -5,5 +5,5 @@ var fs_extra_1 = tslib_1.__importDefault(require("fs-extra"));
 var emailerSetup_1 = tslib_1.__importDefault(require("./emailerSetup"));
 exports["default"] = (function (emailerConstructor) {
     emailerSetup_1["default"](emailerConstructor);
-    return fs_extra_1["default"].ensureDir(global.OPENAPI_NODEGEN_EMAILER_LOG_PATH);
+    return fs_extra_1["default"].ensureDir(global.OPENAPI_NODEGEN_EMAILER_SETTINGS.logPath);
 });

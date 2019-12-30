@@ -21,11 +21,11 @@ var Emailer = /** @class */ (function () {
                         _a = {
                             from: emailerSend.from
                         };
-                        return [4 /*yield*/, this.renderTemplate(path.join(global.OPENAPI_NODEGEN_EMAILER_TEMPLATE_PATH, emailerSend.tplRelativePath + '.html.njk'), emailerSend.tplObject)];
+                        return [4 /*yield*/, this.renderTemplate(path.join(global.OPENAPI_NODEGEN_EMAILER_SETTINGS.tplPath, emailerSend.tplRelativePath + '.html.njk'), emailerSend.tplObject)];
                     case 1:
                         _a.html = _b.sent(),
                             _a.subject = emailerSend.subject;
-                        return [4 /*yield*/, this.renderTemplate(path.join(global.OPENAPI_NODEGEN_EMAILER_TEMPLATE_PATH, emailerSend.tplRelativePath + '.txt.njk'), emailerSend.tplObject)];
+                        return [4 /*yield*/, this.renderTemplate(path.join(global.OPENAPI_NODEGEN_EMAILER_SETTINGS.tplPath, emailerSend.tplRelativePath + '.txt.njk'), emailerSend.tplObject)];
                     case 2:
                         messageObject = (_a.text = _b.sent(),
                             _a.to = emailerSend.to,
@@ -39,12 +39,12 @@ var Emailer = /** @class */ (function () {
         });
     };
     Emailer.prototype.hasBeenInitialized = function () {
-        return !(global.OPENAPI_NODEGEN_EMAILER_TEMPLATE_PATH === undefined
-            || global.OPENAPI_NODEGEN_EMAILER_SEND_TYPE === undefined
-            || global.OPENAPI_NODEGEN_EMAILER_LOG_PATH === undefined);
+        return !(global.OPENAPI_NODEGEN_EMAILER_SETTINGS.tplPath === undefined
+            || global.OPENAPI_NODEGEN_EMAILER_SETTINGS.logPath === undefined
+            || global.OPENAPI_NODEGEN_EMAILER_SETTINGS.sendType === undefined);
     };
     Emailer.prototype.calculateLogFilePath = function (tplRelPath) {
-        return path.join(global.OPENAPI_NODEGEN_EMAILER_LOG_PATH, tplRelPath + new Date().getTime() + '.json');
+        return path.join(global.OPENAPI_NODEGEN_EMAILER_SETTINGS.logPath, tplRelPath + new Date().getTime() + '.json');
     };
     Emailer.prototype.renderTemplate = function (fullTemplatePath, templateObject) {
         return tslib_1.__awaiter(this, void 0, void 0, function () {
@@ -65,7 +65,7 @@ var Emailer = /** @class */ (function () {
             var _this = this;
             return tslib_1.__generator(this, function (_a) {
                 return [2 /*return*/, new Promise(function (resolve) {
-                        switch (global.OPENAPI_NODEGEN_EMAILER_SEND_TYPE) {
+                        switch (global.OPENAPI_NODEGEN_EMAILER_SETTINGS.sendType) {
                             case EmailerSendTypes_1.EmailerSendTypes.sendgrid:
                                 mail_1["default"].setApiKey(process.env.SENDGRID_API_KEY);
                                 return resolve(mail_1["default"].send(sendObject));

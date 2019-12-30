@@ -4,9 +4,8 @@ import sgMail from '@sendgrid/mail';
 import EmailerSendObject from '@/interfaces/EmailerSendObject';
 import nunjucks from 'nunjucks';
 import { EmailerSendTypes } from '@/enums/EmailerSendTypes';
-interface EmailerSend {
-  to: string; from?: string; subject: string; tplObject?: any; tplRelativePath: string;
-}
+import EmailerSend from '@/interfaces/EmailerSend';
+
 class Emailer {
   public async send (emailerSend: EmailerSend): Promise<any> {
     if (!this.hasBeenInitialized()) {
@@ -15,12 +14,12 @@ class Emailer {
     const messageObject = {
       from: emailerSend.from,
       html: await this.renderTemplate(
-        path.join(global.OPENAPI_NODEGEN_EMAILER_TEMPLATE_PATH, emailerSend.tplRelativePath + '.html.njk'),
+        path.join(global.OPENAPI_NODEGEN_EMAILER_SETTINGS.tplPath, emailerSend.tplRelativePath + '.html.njk'),
         emailerSend.tplObject,
       ),
       subject: emailerSend.subject,
       text: await this.renderTemplate(
-        path.join(global.OPENAPI_NODEGEN_EMAILER_TEMPLATE_PATH, emailerSend.tplRelativePath + '.txt.njk'),
+        path.join(global.OPENAPI_NODEGEN_EMAILER_SETTINGS.tplPath, emailerSend.tplRelativePath + '.txt.njk'),
         emailerSend.tplObject,
       ),
       to: emailerSend.to,
@@ -31,14 +30,12 @@ class Emailer {
   }
 
   private hasBeenInitialized () {
-    return !(global.OPENAPI_NODEGEN_EMAILER_TEMPLATE_PATH === undefined
-      || global.OPENAPI_NODEGEN_EMAILER_SEND_TYPE === undefined
-      || global.OPENAPI_NODEGEN_EMAILER_LOG_PATH === undefined);
+    return !(global.OPENAPI_NODEGEN_EMAILER_SETTINGS === undefined);
   }
 
   private calculateLogFilePath (tplRelPath: string) {
     return path.join(
-      global.OPENAPI_NODEGEN_EMAILER_LOG_PATH,
+      global.OPENAPI_NODEGEN_EMAILER_SETTINGS.logPath,
       tplRelPath + new Date().getTime() + '.json',
     );
   }
@@ -56,7 +53,7 @@ class Emailer {
 
   private async sendTo (sendObject: EmailerSendObject) {
     return new Promise((resolve) => {
-      switch (global.OPENAPI_NODEGEN_EMAILER_SEND_TYPE) {
+      switch (global.OPENAPI_NODEGEN_EMAILER_SETTINGS.sendType) {
         case EmailerSendTypes.sendgrid:
           sgMail.setApiKey(process.env.SENDGRID_API_KEY);
           return resolve(sgMail.send(sendObject));
@@ -64,7 +61,7 @@ class Emailer {
           return resolve(sendObject);
         case EmailerSendTypes.log:
           console.log(sendObject);
-          // don't break here as log and file should write log to disk.
+        // don't break here as log and file should write log to disk.
         case EmailerSendTypes.file:
           const filePath = this.calculateLogFilePath(sendObject.tplRelativePath);
           fs.writeFile(filePath, JSON.stringify(sendObject), 'utf8', () => {

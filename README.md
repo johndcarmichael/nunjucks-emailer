@@ -19,6 +19,7 @@ Automatically pickout html and text file based on a the fie structure, see below
 - [Example openapi-nodegen-typescript-server](#example-openapi-nodegen-typescript-server)
 - [Example General Usage in a single file](#example-general-usage-in-a-single-file)
 - [Unit test example](#unit-test-example)
+- [Setup sync & async](#setup-sync--async)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
@@ -62,7 +63,13 @@ class RegisterDomain {
     // register user ...
 
     // send out email
-    await Emailer.send('john@john.com', 'bob@bob.com', 'Welcome', {name: 'John'}, 'welcome')
+    await Emailer.send({
+      to: 'john@john.com',
+      from: 'bob@bob.com', 
+      subject: 'Welcome to the app John!', 
+      tplObject: {name: 'John'}, 
+      tplRelativePath: 'welcome'
+    })
 
     // return 
   }
@@ -85,7 +92,13 @@ emailerSetupSync({
   templatePath: path.join(process.cwd(), 'email')
 });
 
-Emailer.send('john@john.com', 'bob@bob.com', 'Welcome', {name: 'John'}, 'welcome')
+Emailer.send({
+  to: 'john@john.com',
+  from: 'bob@bob.com', 
+  subject: 'Welcome to the app John!', 
+  tplObject: {name: 'John'}, 
+  tplRelativePath: 'welcome'
+})
 .catch((err) => {
   console.error(err)
 })
@@ -102,3 +115,8 @@ emailerSetupSync({ sendType: EmailerSendTypes.log });
 ```
 
 Then continue to use the package as normal. As the typescript server has the domain layer abstracted from the http layer, you can now write the business logic in a domain method as above and then unit test without mocking or sending out actual emails.
+
+## Setup sync & async
+Depending on the design of your system, you may be ok or not ok with using a blocking form of the setup emailerSetupSync. Typically if you are only setting up at 1 point in the app this is a not a problem, but if you are dynamically changing on the fly, you should use `emailerSetupAsync`, it does the same job but asynchronously and returns a promise. See the "should initialise correctly" test in "Emailer.spec.ts" file.
+
+

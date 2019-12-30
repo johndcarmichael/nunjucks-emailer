@@ -1,7 +1,7 @@
 {
   "name": "openapi-nodegen-emailer",
   "version": "1.0.1",
-  "description": "A set of files to get moving for a typescript npm package, remove all not required",
+  "description": "Send emails via simple template pattern.",
   "licence": "MIT",
   "main": "./build/index.js",
   "scripts": {
@@ -26,10 +26,8 @@
     "email",
     "sendgrid"
   ],
-  "peerDependencies": {
-    "@sendgrid/mail": "^6.4.0"
-  },
   "dependencies": {
+    "@sendgrid/mail": "^6.4.0",
     "fs-extra": "^8.1.0",
     "nunjucks": "^3.2.0"
   },
