@@ -1,3 +1,6 @@
+
+[![License](http://img.shields.io/npm/l/boats.svg)](https://github.com/johndcarmichael/openapi-nodegen-emailer/blob/master/LICENSE) | [![Dependencies](https://david-dm.org/johndcarmichael/openapi-nodegen-emailer.svg)](https://david-dm.org/johndcarmichael/openapi-nodegen-emailer) | [![Codecov Coverage](https://img.shields.io/codecov/c/github/johndcarmichael/openapi-nodegen-emailer/master.svg?style=flat-square)](https://codecov.io/gh/johndcarmichael/openapi-nodegen-emailer/) | [![Build Status](https://api.travis-ci.org/johndcarmichael/openapi-nodegen-emailer.svg?branch=master)](https://travis-ci.org/johndcarmichael/openapi-nodegen-emailer)
+
 # openapi-nodegen-emailer
 
 Write email templates with Nunjucks in independent html and text files, send with SendGrid or log to console &/or disk or simply return the email object for other use.
