@@ -9,7 +9,7 @@ var EmailerSendTypes_1 = require("./enums/EmailerSendTypes");
 var Emailer = /** @class */ (function () {
     function Emailer() {
     }
-    Emailer.prototype.send = function (to, from, subject, tplObject, tplRelativePath) {
+    Emailer.prototype.send = function (emailerSend) {
         return tslib_1.__awaiter(this, void 0, void 0, function () {
             var messageObject, _a;
             return tslib_1.__generator(this, function (_b) {
@@ -19,18 +19,18 @@ var Emailer = /** @class */ (function () {
                             throw new Error('You must first call EmailerSetup before using the Emailer class.');
                         }
                         _a = {
-                            from: from
+                            from: emailerSend.from
                         };
-                        return [4 /*yield*/, this.renderTemplate(path.join(global.OPENAPI_NODEGEN_EMAILER_TEMPLATE_PATH, tplRelativePath + '.html.njk'), tplObject)];
+                        return [4 /*yield*/, this.renderTemplate(path.join(global.OPENAPI_NODEGEN_EMAILER_TEMPLATE_PATH, emailerSend.tplRelativePath + '.html.njk'), emailerSend.tplObject)];
                     case 1:
                         _a.html = _b.sent(),
-                            _a.subject = subject;
-                        return [4 /*yield*/, this.renderTemplate(path.join(global.OPENAPI_NODEGEN_EMAILER_TEMPLATE_PATH, tplRelativePath + '.txt.njk'), tplObject)];
+                            _a.subject = emailerSend.subject;
+                        return [4 /*yield*/, this.renderTemplate(path.join(global.OPENAPI_NODEGEN_EMAILER_TEMPLATE_PATH, emailerSend.tplRelativePath + '.txt.njk'), emailerSend.tplObject)];
                     case 2:
                         messageObject = (_a.text = _b.sent(),
-                            _a.to = to,
-                            _a.tplObject = tplObject,
-                            _a.tplRelativePath = tplRelativePath,
+                            _a.to = emailerSend.to,
+                            _a.tplObject = emailerSend.tplObject,
+                            _a.tplRelativePath = emailerSend.tplRelativePath,
                             _a);
                         return [4 /*yield*/, this.sendTo(messageObject)];
                     case 3: return [2 /*return*/, _b.sent()];
@@ -54,7 +54,7 @@ var Emailer = /** @class */ (function () {
                             if (err) {
                                 return reject(err);
                             }
-                            resolve(nunjucks_1["default"].renderString(data, templateObject));
+                            resolve(nunjucks_1["default"].renderString(data, templateObject || {}));
                         });
                     })];
             });

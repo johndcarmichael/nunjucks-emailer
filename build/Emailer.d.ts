@@ -1,5 +1,12 @@
+interface EmailerSend {
+    to: string;
+    from?: string;
+    subject: string;
+    tplObject?: any;
+    tplRelativePath: string;
+}
 declare class Emailer {
-    send(to: string, from: string, subject: string, tplObject: any, tplRelativePath: string): Promise<any>;
+    send(emailerSend: EmailerSend): Promise<any>;
     private hasBeenInitialized;
     private calculateLogFilePath;
     private renderTemplate;

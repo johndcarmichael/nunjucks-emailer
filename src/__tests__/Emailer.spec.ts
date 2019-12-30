@@ -11,7 +11,7 @@ const subject = 'This is a test email';
 const tplObject = {
   name: 'John',
 };
-const tplRelPath = 'welcome';
+const tplRelativePath = 'welcome';
 const expectedObject = {
   from: from,
   html: `<p>Welcome John</p>
@@ -21,7 +21,7 @@ const expectedObject = {
 `,
   to: to,
   tplObject: tplObject,
-  tplRelativePath: tplRelPath,
+  tplRelativePath: tplRelativePath,
 };
 
 describe('Setup, render and return object correctly', () => {
@@ -30,7 +30,7 @@ describe('Setup, render and return object correctly', () => {
   });
   it('should throw error if not initialized', async (done) => {
     try {
-      await Emailer.send(to, from, subject, tplObject, tplRelPath);
+      await Emailer.send({to, from, subject, tplObject, tplRelativePath});
       done('Should have thrown an error!');
     } catch (e) {
       done();
@@ -56,13 +56,13 @@ describe('Setup, render and return object correctly', () => {
   });
 
   it('should return the object', async () => {
-    const sentObject = await Emailer.send(to, from, subject, tplObject, tplRelPath);
+    const sentObject = await Emailer.send({to, from, subject, tplObject, tplRelativePath});
     expect(sentObject).toEqual(expectedObject);
   });
 
   it('should throw error for wrong tpl name', async (done) => {
     try {
-      await Emailer.send(to, from, subject, tplObject, 'doesnotexist');
+      await Emailer.send({to, from, subject, tplObject, tplRelativePath: 'doesnotexist'});
       done('Should have thrown an error on wrong tpl name');
     } catch (e) {
       done();
@@ -82,7 +82,7 @@ describe('Setup, render and return object correctly', () => {
       templatePath: path.join(process.cwd(), 'src/__tests__/templates'),
       logPath: logPath,
     });
-    await Emailer.send(to, from, subject, tplObject, tplRelPath);
+    await Emailer.send({to, from, subject, tplObject, tplRelativePath});
     const recursive = require('recursive-readdir-sync');
     // read the dir and get the latest file name in the dir
     const files = recursive(logPath);
@@ -100,7 +100,7 @@ describe('Setup, render and return object correctly', () => {
       logPath: logPath,
     });
     try {
-      await Emailer.send(to, from, subject, tplObject, tplRelPath);
+      await Emailer.send({to, from, subject, tplObject, tplRelativePath});
       done('Should have thrown an error for unwritable directory, either this is running as root or there is an error in the code');
     } catch (e) {
       done();
@@ -113,7 +113,7 @@ describe('Setup, render and return object correctly', () => {
       templatePath: path.join(process.cwd(), 'src/__tests__/templates'),
       logPath: logPath,
     });
-    const logFile = await Emailer.send(to, from, subject, tplObject, tplRelPath);
+    const logFile = await Emailer.send({to, from, subject, tplObject, tplRelativePath});
     expect(fs.existsSync(logFile)).toBe(true);
   });
 });

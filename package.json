@@ -1,6 +1,6 @@
 {
   "name": "openapi-nodegen-emailer",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "A set of files to get moving for a typescript npm package, remove all not required",
   "licence": "MIT",
   "main": "./build/index.js",

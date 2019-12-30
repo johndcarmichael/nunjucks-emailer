@@ -4,26 +4,28 @@ import sgMail from '@sendgrid/mail';
 import EmailerSendObject from '@/interfaces/EmailerSendObject';
 import nunjucks from 'nunjucks';
 import { EmailerSendTypes } from '@/enums/EmailerSendTypes';
-
+interface EmailerSend {
+  to: string, from?: string, subject: string, tplObject?: any, tplRelativePath: string
+}
 class Emailer {
-  public async send (to: string, from: string, subject: string, tplObject: any, tplRelativePath: string): Promise<any> {
+  public async send (emailerSend: EmailerSend): Promise<any> {
     if (!this.hasBeenInitialized()) {
       throw new Error('You must first call EmailerSetup before using the Emailer class.');
     }
     const messageObject = {
-      from,
+      from: emailerSend.from,
       html: await this.renderTemplate(
-        path.join(global.OPENAPI_NODEGEN_EMAILER_TEMPLATE_PATH, tplRelativePath + '.html.njk'),
-        tplObject,
+        path.join(global.OPENAPI_NODEGEN_EMAILER_TEMPLATE_PATH, emailerSend.tplRelativePath + '.html.njk'),
+        emailerSend.tplObject,
       ),
-      subject,
+      subject: emailerSend.subject,
       text: await this.renderTemplate(
-        path.join(global.OPENAPI_NODEGEN_EMAILER_TEMPLATE_PATH, tplRelativePath + '.txt.njk'),
-        tplObject,
+        path.join(global.OPENAPI_NODEGEN_EMAILER_TEMPLATE_PATH, emailerSend.tplRelativePath + '.txt.njk'),
+        emailerSend.tplObject,
       ),
-      to,
-      tplObject,
-      tplRelativePath,
+      to: emailerSend.to,
+      tplObject: emailerSend.tplObject,
+      tplRelativePath: emailerSend.tplRelativePath,
     };
     return await this.sendTo(messageObject);
   }
@@ -41,13 +43,13 @@ class Emailer {
     );
   }
 
-  private async renderTemplate (fullTemplatePath: string, templateObject: any): Promise<string> {
+  private async renderTemplate (fullTemplatePath: string, templateObject?: any): Promise<string> {
     return new Promise((resolve, reject) => {
       fs.readFile(fullTemplatePath, 'utf8', (err, data) => {
         if (err) {
           return reject(err);
         }
-        resolve(nunjucks.renderString(data, templateObject));
+        resolve(nunjucks.renderString(data, templateObject || {}));
       });
     });
   }

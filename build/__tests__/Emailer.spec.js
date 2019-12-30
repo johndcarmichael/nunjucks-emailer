@@ -13,7 +13,7 @@ var subject = 'This is a test email';
 var tplObject = {
     name: 'John'
 };
-var tplRelPath = 'welcome';
+var tplRelativePath = 'welcome';
 var expectedObject = {
     from: from,
     html: "<p>Welcome John</p>\n",
@@ -21,7 +21,7 @@ var expectedObject = {
     text: "Welcome John\n",
     to: to,
     tplObject: tplObject,
-    tplRelativePath: tplRelPath
+    tplRelativePath: tplRelativePath
 };
 describe('Setup, render and return object correctly', function () {
     afterAll(function () {
@@ -33,7 +33,7 @@ describe('Setup, render and return object correctly', function () {
             switch (_a.label) {
                 case 0:
                     _a.trys.push([0, 2, , 3]);
-                    return [4 /*yield*/, index_1.Emailer.send(to, from, subject, tplObject, tplRelPath)];
+                    return [4 /*yield*/, index_1.Emailer.send({ to: to, from: from, subject: subject, tplObject: tplObject, tplRelativePath: tplRelativePath })];
                 case 1:
                     _a.sent();
                     done('Should have thrown an error!');
@@ -79,7 +79,7 @@ describe('Setup, render and return object correctly', function () {
         var sentObject;
         return tslib_1.__generator(this, function (_a) {
             switch (_a.label) {
-                case 0: return [4 /*yield*/, index_1.Emailer.send(to, from, subject, tplObject, tplRelPath)];
+                case 0: return [4 /*yield*/, index_1.Emailer.send({ to: to, from: from, subject: subject, tplObject: tplObject, tplRelativePath: tplRelativePath })];
                 case 1:
                     sentObject = _a.sent();
                     expect(sentObject).toEqual(expectedObject);
@@ -93,7 +93,7 @@ describe('Setup, render and return object correctly', function () {
             switch (_a.label) {
                 case 0:
                     _a.trys.push([0, 2, , 3]);
-                    return [4 /*yield*/, index_1.Emailer.send(to, from, subject, tplObject, 'doesnotexist')];
+                    return [4 /*yield*/, index_1.Emailer.send({ to: to, from: from, subject: subject, tplObject: tplObject, tplRelativePath: 'doesnotexist' })];
                 case 1:
                     _a.sent();
                     done('Should have thrown an error on wrong tpl name');
@@ -122,7 +122,7 @@ describe('Setup, render and return object correctly', function () {
                         templatePath: path_1["default"].join(process.cwd(), 'src/__tests__/templates'),
                         logPath: logPath
                     });
-                    return [4 /*yield*/, index_1.Emailer.send(to, from, subject, tplObject, tplRelPath)];
+                    return [4 /*yield*/, index_1.Emailer.send({ to: to, from: from, subject: subject, tplObject: tplObject, tplRelativePath: tplRelativePath })];
                 case 1:
                     _a.sent();
                     recursive = require('recursive-readdir-sync');
@@ -145,7 +145,7 @@ describe('Setup, render and return object correctly', function () {
                     _a.label = 1;
                 case 1:
                     _a.trys.push([1, 3, , 4]);
-                    return [4 /*yield*/, index_1.Emailer.send(to, from, subject, tplObject, tplRelPath)];
+                    return [4 /*yield*/, index_1.Emailer.send({ to: to, from: from, subject: subject, tplObject: tplObject, tplRelativePath: tplRelativePath })];
                 case 2:
                     _a.sent();
                     done('Should have thrown an error for unwritable directory, either this is running as root or there is an error in the code');
@@ -168,7 +168,7 @@ describe('Setup, render and return object correctly', function () {
                         templatePath: path_1["default"].join(process.cwd(), 'src/__tests__/templates'),
                         logPath: logPath
                     });
-                    return [4 /*yield*/, index_1.Emailer.send(to, from, subject, tplObject, tplRelPath)];
+                    return [4 /*yield*/, index_1.Emailer.send({ to: to, from: from, subject: subject, tplObject: tplObject, tplRelativePath: tplRelativePath })];
                 case 1:
                     logFile = _a.sent();
                     expect(fs_extra_1["default"].existsSync(logFile)).toBe(true);
