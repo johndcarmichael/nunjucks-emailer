@@ -9,6 +9,7 @@ declare namespace NodeJS {
       tplPath: string,
       sendType: string,
       logPath: string,
+      fallbackFrom: string
     };
   }
 }

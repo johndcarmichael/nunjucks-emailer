@@ -45,6 +45,7 @@ export default interface EmailerConstructor {
   templatePath?: string; // Full path to the folder containing the nunuck email templates, defaults to ./email/templates
   sendType: EmailerSendTypes; // This dictates what happens when Emailer.send is called values from the above enum
   logPath?: string; // Dictates where the emails are written to disk: EmailerSendTypes.file, defaults to email/logs
+  fallbackFrom: string; // The from email used when no from email provided, typically a system email address, eg "no-reply@myawesome.app"
 }
 ```
 
@@ -53,10 +54,13 @@ Setup the emailer in the [app.ts](https://github.com/acrontum/openapi-nodegen-ty
 ```typescript
 import { emailerSetupSync, EmailerSendTypes } from 'nunjucks-node-emailer';
 
-emailerSetupSync({ sendType: EmailerSendTypes.sendgrid });
+emailerSetupSync({ 
+  sendType: EmailerSendTypes.sendgrid,
+  fallbackFrom: 'no-reply@myapp.com',
+});
 ```
 
-Use the emailer in a [domain method](https://github.com/acrontum/openapi-nodegen-typescript-server/blob/master/src/domains/___stub.ts.njk) with a single line:
+Use the emailer in another file in your app now without having to call setup each time, eg in a [domain method](https://github.com/acrontum/openapi-nodegen-typescript-server/blob/master/src/domains/___stub.ts.njk):
 ```typescript
 class RegisterDomain {
   public async registerEmailPost (body: RegisterEmailPost, req: any): Promise<Login> {
@@ -89,12 +93,11 @@ import { Emailer, emailerSetupSync, EmailerSendTypes } from 'nunjucks-node-email
 
 emailerSetupSync({
   sendType: EmailerSendTypes.file,
-  templatePath: path.join(process.cwd(), 'email')
+  fallbackFrom: 'no-reply@myapp.com',
 });
 
 Emailer.send({
   to: 'john@john.com',
-  from: 'bob@bob.com', 
   subject: 'Welcome to the app John!', 
   tplObject: {name: 'John'}, 
   tplRelativePath: 'welcome'

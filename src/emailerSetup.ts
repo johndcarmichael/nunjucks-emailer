@@ -6,5 +6,6 @@ export default (emailerConstructor: EmailerConstructor) => {
     tplPath: emailerConstructor.templatePath || path.join(process.cwd(), 'email/templates'),
     sendType: emailerConstructor.sendType,
     logPath: emailerConstructor.logPath || path.join(process.cwd(), 'email/logs'),
+    fallbackFrom: emailerConstructor.fallbackFrom,
   };
 };

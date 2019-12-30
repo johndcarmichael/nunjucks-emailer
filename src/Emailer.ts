@@ -12,7 +12,7 @@ class Emailer {
       throw new Error('You must first call EmailerSetup before using the Emailer class.');
     }
     const messageObject = {
-      from: emailerSend.from,
+      from: emailerSend.from || global.OPENAPI_NODEGEN_EMAILER_SETTINGS.fallbackFrom,
       html: await this.renderTemplate(
         path.join(global.OPENAPI_NODEGEN_EMAILER_SETTINGS.tplPath, emailerSend.tplRelativePath + '.html.njk'),
         emailerSend.tplObject,
@@ -23,7 +23,7 @@ class Emailer {
         emailerSend.tplObject,
       ),
       to: emailerSend.to,
-      tplObject: emailerSend.tplObject,
+      tplObject: emailerSend.tplObject || {},
       tplRelativePath: emailerSend.tplRelativePath,
     };
     return await this.sendTo(messageObject);

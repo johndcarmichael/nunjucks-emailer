@@ -7,6 +7,7 @@ import emailerSetup from '@/emailerSetup';
 const logPath = path.join(process.cwd(), 'src/__tests__/log');
 const to = 'john@john.com';
 const from = 'bob@bob.com';
+const fallbackFrom = 'test@test.com';
 const subject = 'This is a test email';
 const tplObject = {
   name: 'John',
@@ -38,16 +39,21 @@ describe('Setup, render and return object correctly', () => {
   });
   it('should initialise correctly', async (done) => {
     try {
-      emailerSetup({sendType: EmailerSendTypes.return});
+      emailerSetup({
+        sendType: EmailerSendTypes.return,
+        fallbackFrom,
+      });
       emailerSetupSync({
         sendType: EmailerSendTypes.return,
         templatePath: path.join(process.cwd(), 'src/__tests__/templates'),
         logPath: logPath,
+        fallbackFrom,
       });
       await emailerSetupAsync({
         sendType: EmailerSendTypes.return,
         templatePath: path.join(process.cwd(), 'src/__tests__/templates'),
         logPath: logPath,
+        fallbackFrom,
       });
       done();
     } catch (e) {
@@ -58,6 +64,13 @@ describe('Setup, render and return object correctly', () => {
   it('should return the object', async () => {
     const sentObject = await Emailer.send({to, from, subject, tplObject, tplRelativePath});
     expect(sentObject).toEqual(expectedObject);
+  });
+
+  it('should return the object but with fallbackFrom email', async () => {
+    const sentObject = await Emailer.send({to, subject, tplObject, tplRelativePath});
+    expect(sentObject).toEqual(
+      Object.assign(JSON.parse(JSON.stringify(expectedObject)), {from: fallbackFrom}),
+    );
   });
 
   it('should throw error for wrong tpl name', async (done) => {
@@ -80,7 +93,8 @@ describe('Setup, render and return object correctly', () => {
     emailerSetupSync({
       sendType: EmailerSendTypes.file,
       templatePath: path.join(process.cwd(), 'src/__tests__/templates'),
-      logPath: logPath,
+      logPath,
+      fallbackFrom,
     });
     await Emailer.send({to, from, subject, tplObject, tplRelativePath});
     const recursive = require('recursive-readdir-sync');
@@ -97,7 +111,8 @@ describe('Setup, render and return object correctly', () => {
     emailerSetupSync({
       sendType: EmailerSendTypes.file,
       templatePath: '/',
-      logPath: logPath,
+      logPath,
+      fallbackFrom,
     });
     try {
       await Emailer.send({to, from, subject, tplObject, tplRelativePath});
@@ -111,7 +126,8 @@ describe('Setup, render and return object correctly', () => {
     emailerSetupSync({
       sendType: EmailerSendTypes.log,
       templatePath: path.join(process.cwd(), 'src/__tests__/templates'),
-      logPath: logPath,
+      logPath,
+      fallbackFrom,
     });
     const logFile = await Emailer.send({to, from, subject, tplObject, tplRelativePath});
     expect(fs.existsSync(logFile)).toBe(true);

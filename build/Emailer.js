@@ -39,9 +39,7 @@ var Emailer = /** @class */ (function () {
         });
     };
     Emailer.prototype.hasBeenInitialized = function () {
-        return !(global.OPENAPI_NODEGEN_EMAILER_SETTINGS.tplPath === undefined
-            || global.OPENAPI_NODEGEN_EMAILER_SETTINGS.logPath === undefined
-            || global.OPENAPI_NODEGEN_EMAILER_SETTINGS.sendType === undefined);
+        return !(global.OPENAPI_NODEGEN_EMAILER_SETTINGS === undefined);
     };
     Emailer.prototype.calculateLogFilePath = function (tplRelPath) {
         return path.join(global.OPENAPI_NODEGEN_EMAILER_SETTINGS.logPath, tplRelPath + new Date().getTime() + '.json');
