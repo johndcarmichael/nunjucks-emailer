@@ -19,7 +19,7 @@ var Emailer = /** @class */ (function () {
                             throw new Error('You must first call EmailerSetup before using the Emailer class.');
                         }
                         _a = {
-                            from: emailerSend.from
+                            from: emailerSend.from || global.OPENAPI_NODEGEN_EMAILER_SETTINGS.fallbackFrom
                         };
                         return [4 /*yield*/, this.renderTemplate(path.join(global.OPENAPI_NODEGEN_EMAILER_SETTINGS.tplPath, emailerSend.tplRelativePath + '.html.njk'), emailerSend.tplObject)];
                     case 1:
@@ -29,7 +29,7 @@ var Emailer = /** @class */ (function () {
                     case 2:
                         messageObject = (_a.text = _b.sent(),
                             _a.to = emailerSend.to,
-                            _a.tplObject = emailerSend.tplObject,
+                            _a.tplObject = emailerSend.tplObject || {},
                             _a.tplRelativePath = emailerSend.tplRelativePath,
                             _a);
                         return [4 /*yield*/, this.sendTo(messageObject)];

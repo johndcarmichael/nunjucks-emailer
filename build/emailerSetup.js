@@ -6,6 +6,7 @@ exports["default"] = (function (emailerConstructor) {
     global.OPENAPI_NODEGEN_EMAILER_SETTINGS = {
         tplPath: emailerConstructor.templatePath || path_1["default"].join(process.cwd(), 'email/templates'),
         sendType: emailerConstructor.sendType,
-        logPath: emailerConstructor.logPath || path_1["default"].join(process.cwd(), 'email/logs')
+        logPath: emailerConstructor.logPath || path_1["default"].join(process.cwd(), 'email/logs'),
+        fallbackFrom: emailerConstructor.fallbackFrom
     };
 });
