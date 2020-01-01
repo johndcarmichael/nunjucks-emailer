@@ -18,6 +18,7 @@ Automatically pickout html and text file based on a the fie structure, see below
 - [Setup options explained](#setup-options-explained)
 - [Example openapi-nodegen-typescript-server](#example-openapi-nodegen-typescript-server)
 - [Example General Usage in a single file](#example-general-usage-in-a-single-file)
+- [Global variables (common dynamic content)](#global-variables-common-dynamic-content)
 - [Unit test example](#unit-test-example)
 - [Setup sync & async](#setup-sync--async)
 
@@ -52,7 +53,7 @@ export default interface EmailerConstructor {
 ## Example openapi-nodegen-typescript-server
 Setup the emailer in the [app.ts](https://github.com/acrontum/openapi-nodegen-typescript-server/blob/master/src/app.ts) by adding:
 ```typescript
-import { emailerSetupSync, EmailerSendTypes } from 'nunjucks-node-emailer';
+import { emailerSetupSync, EmailerSendTypes } from 'openapi-nodegen-emailer';
 
 emailerSetupSync({ 
   sendType: EmailerSendTypes.sendgrid,
@@ -88,8 +89,7 @@ path.join(process.cwd(), 'email/templates')
 
 ## Example General Usage in a single file
 ```typescript
-import path from 'path';
-import { Emailer, emailerSetupSync, EmailerSendTypes } from 'nunjucks-node-emailer';
+import { Emailer, emailerSetupSync, EmailerSendTypes } from 'openapi-nodegen-emailer';
 
 emailerSetupSync({
   sendType: EmailerSendTypes.file,
@@ -106,6 +106,33 @@ Emailer.send({
   console.error(err)
 })
 ``` 
+
+## Global variables (common dynamic content)
+To inject say, a company telephone number into an email, you would likely want to grab this from a managed source instead of changing hardcoded emails all the time, or injecting the common content to every email tplObject.. gets fairly repetitive quite quickly.
+
+Add to the setup:
+```typescript
+import { Emailer, emailerSetupSync, EmailerSendTypes } from 'openapi-nodegen-emailer';
+
+emailerSetupSync({
+  sendType: EmailerSendTypes.file,
+  fallbackFrom: 'no-reply@myapp.com',
+  templateGlobalObject: {
+    contactUsEmail: 'hello@myapp.com',
+    telephoneNumber: '0123654789',
+  }
+});
+```
+
+Now you do not have to worry about injecting this content into email tplObject sent to Emailer.send or hardcoding it into email templates. Just call it:
+```twig
+Hi,
+
+You can reach us at {{ contactUsEmail }} or call us on {{ telephoneNumber }}
+```
+
+The global object is also logged and returned from the dens function.
+
 
 ## Unit test example
 

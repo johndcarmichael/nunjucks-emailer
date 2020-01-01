@@ -1,6 +1,6 @@
 import path from 'path';
 import { EmailerSendTypes } from '@/enums/EmailerSendTypes';
-import { emailerSetupSync, emailerSetupAsync, Emailer } from '@/index';
+import { Emailer, emailerSetupAsync, emailerSetupSync } from '@/index';
 import fs from 'fs-extra';
 import emailerSetup from '@/emailerSetup';
 
@@ -13,14 +13,19 @@ const tplObject = {
   name: 'John',
 };
 const tplRelativePath = 'welcome';
+const templateGlobalObject = {
+  globalNumber: '123.123.654',
+};
 const expectedObject = {
   from: from,
   html: `<p>Welcome John</p>
+<p>${templateGlobalObject.globalNumber}</p>
 `,
   subject: subject,
   text: `Welcome John
 `,
   to: to,
+  tplGlobalObject: templateGlobalObject,
   tplObject: tplObject,
   tplRelativePath: tplRelativePath,
 };
@@ -31,7 +36,7 @@ describe('Setup, render and return object correctly', () => {
   });
   it('should throw error if not initialized', async (done) => {
     try {
-      await Emailer.send({to, from, subject, tplObject, tplRelativePath});
+      await Emailer.send({ to, from, subject, tplObject, tplRelativePath });
       done('Should have thrown an error!');
     } catch (e) {
       done();
@@ -48,12 +53,14 @@ describe('Setup, render and return object correctly', () => {
         templatePath: path.join(process.cwd(), 'src/__tests__/templates'),
         logPath: logPath,
         fallbackFrom,
+        templateGlobalObject,
       });
       await emailerSetupAsync({
         sendType: EmailerSendTypes.return,
         templatePath: path.join(process.cwd(), 'src/__tests__/templates'),
         logPath: logPath,
         fallbackFrom,
+        templateGlobalObject,
       });
       done();
     } catch (e) {
@@ -62,20 +69,20 @@ describe('Setup, render and return object correctly', () => {
   });
 
   it('should return the object', async () => {
-    const sentObject = await Emailer.send({to, from, subject, tplObject, tplRelativePath});
+    const sentObject = await Emailer.send({ to, from, subject, tplObject, tplRelativePath });
     expect(sentObject).toEqual(expectedObject);
   });
 
   it('should return the object but with fallbackFrom email', async () => {
-    const sentObject = await Emailer.send({to, subject, tplObject, tplRelativePath});
+    const sentObject = await Emailer.send({ to, subject, tplObject, tplRelativePath });
     expect(sentObject).toEqual(
-      Object.assign(JSON.parse(JSON.stringify(expectedObject)), {from: fallbackFrom}),
+      Object.assign(JSON.parse(JSON.stringify(expectedObject)), { from: fallbackFrom }),
     );
   });
 
   it('should throw error for wrong tpl name', async (done) => {
     try {
-      await Emailer.send({to, from, subject, tplObject, tplRelativePath: 'doesnotexist'});
+      await Emailer.send({ to, from, subject, tplObject, tplRelativePath: 'doesnotexist' });
       done('Should have thrown an error on wrong tpl name');
     } catch (e) {
       done();
@@ -95,8 +102,9 @@ describe('Setup, render and return object correctly', () => {
       templatePath: path.join(process.cwd(), 'src/__tests__/templates'),
       logPath,
       fallbackFrom,
+      templateGlobalObject,
     });
-    await Emailer.send({to, from, subject, tplObject, tplRelativePath});
+    await Emailer.send({ to, from, subject, tplObject, tplRelativePath });
     const recursive = require('recursive-readdir-sync');
     // read the dir and get the latest file name in the dir
     const files = recursive(logPath);
@@ -113,23 +121,25 @@ describe('Setup, render and return object correctly', () => {
       templatePath: '/',
       logPath,
       fallbackFrom,
+      templateGlobalObject,
     });
     try {
-      await Emailer.send({to, from, subject, tplObject, tplRelativePath});
+      await Emailer.send({ to, from, subject, tplObject, tplRelativePath });
       done('Should have thrown an error for unwritable directory, either this is running as root or there is an error in the code');
     } catch (e) {
       done();
     }
   });
 
-  it('should return empty string for console mode', async () => {
+  it('Should write file to disk', async () => {
     emailerSetupSync({
       sendType: EmailerSendTypes.log,
       templatePath: path.join(process.cwd(), 'src/__tests__/templates'),
       logPath,
       fallbackFrom,
+      templateGlobalObject,
     });
-    const logFile = await Emailer.send({to, from, subject, tplObject, tplRelativePath});
+    const logFile = await Emailer.send({ to, from, subject, tplObject, tplRelativePath });
     expect(fs.existsSync(logFile)).toBe(true);
   });
 });

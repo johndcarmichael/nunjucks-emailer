@@ -46,25 +46,36 @@ class Emailer {
         if (err) {
           return reject(err);
         }
+        const env = nunjucks.configure({
+          autoescape: false,
+        });
+        for (const key in global.OPENAPI_NODEGEN_EMAILER_SETTINGS.tplGlobalObject) {
+          if (global.OPENAPI_NODEGEN_EMAILER_SETTINGS.tplGlobalObject.hasOwnProperty(key)) {
+            env.addGlobal(key, global.OPENAPI_NODEGEN_EMAILER_SETTINGS.tplGlobalObject[key]);
+          }
+        }
         resolve(nunjucks.renderString(data, templateObject || {}));
       });
     });
   }
 
   private async sendTo (sendObject: EmailerSendObject) {
+    const sendObjectWithGlobals = Object.assign(sendObject, {
+      tplGlobalObject: global.OPENAPI_NODEGEN_EMAILER_SETTINGS.tplGlobalObject,
+    });
     return new Promise((resolve) => {
       switch (global.OPENAPI_NODEGEN_EMAILER_SETTINGS.sendType) {
         case EmailerSendTypes.sendgrid:
           sgMail.setApiKey(process.env.SENDGRID_API_KEY);
-          return resolve(sgMail.send(sendObject));
+          return resolve(sgMail.send(sendObjectWithGlobals));
         case EmailerSendTypes.return:
-          return resolve(sendObject);
+          return resolve(sendObjectWithGlobals);
         case EmailerSendTypes.log:
-          console.log(sendObject);
+          console.log(sendObjectWithGlobals);
         // don't break here as log and file should write log to disk.
         case EmailerSendTypes.file:
           const filePath = this.calculateLogFilePath(sendObject.tplRelativePath);
-          fs.writeFile(filePath, JSON.stringify(sendObject), 'utf8', () => {
+          fs.writeFile(filePath, JSON.stringify(sendObjectWithGlobals), 'utf8', () => {
             return resolve(filePath);
           });
           break;

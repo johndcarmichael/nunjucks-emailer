@@ -52,6 +52,14 @@ var Emailer = /** @class */ (function () {
                             if (err) {
                                 return reject(err);
                             }
+                            var env = nunjucks_1["default"].configure({
+                                autoescape: false
+                            });
+                            for (var key in global.OPENAPI_NODEGEN_EMAILER_SETTINGS.tplGlobalObject) {
+                                if (global.OPENAPI_NODEGEN_EMAILER_SETTINGS.tplGlobalObject.hasOwnProperty(key)) {
+                                    env.addGlobal(key, global.OPENAPI_NODEGEN_EMAILER_SETTINGS.tplGlobalObject[key]);
+                                }
+                            }
                             resolve(nunjucks_1["default"].renderString(data, templateObject || {}));
                         });
                     })];
@@ -60,21 +68,25 @@ var Emailer = /** @class */ (function () {
     };
     Emailer.prototype.sendTo = function (sendObject) {
         return tslib_1.__awaiter(this, void 0, void 0, function () {
+            var sendObjectWithGlobals;
             var _this = this;
             return tslib_1.__generator(this, function (_a) {
+                sendObjectWithGlobals = Object.assign(sendObject, {
+                    tplGlobalObject: global.OPENAPI_NODEGEN_EMAILER_SETTINGS.tplGlobalObject
+                });
                 return [2 /*return*/, new Promise(function (resolve) {
                         switch (global.OPENAPI_NODEGEN_EMAILER_SETTINGS.sendType) {
                             case EmailerSendTypes_1.EmailerSendTypes.sendgrid:
                                 mail_1["default"].setApiKey(process.env.SENDGRID_API_KEY);
-                                return resolve(mail_1["default"].send(sendObject));
+                                return resolve(mail_1["default"].send(sendObjectWithGlobals));
                             case EmailerSendTypes_1.EmailerSendTypes["return"]:
-                                return resolve(sendObject);
+                                return resolve(sendObjectWithGlobals);
                             case EmailerSendTypes_1.EmailerSendTypes.log:
-                                console.log(sendObject);
+                                console.log(sendObjectWithGlobals);
                             // don't break here as log and file should write log to disk.
                             case EmailerSendTypes_1.EmailerSendTypes.file:
                                 var filePath_1 = _this.calculateLogFilePath(sendObject.tplRelativePath);
-                                fs_1["default"].writeFile(filePath_1, JSON.stringify(sendObject), 'utf8', function () {
+                                fs_1["default"].writeFile(filePath_1, JSON.stringify(sendObjectWithGlobals), 'utf8', function () {
                                     return resolve(filePath_1);
                                 });
                                 break;
