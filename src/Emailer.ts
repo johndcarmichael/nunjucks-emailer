@@ -1,5 +1,5 @@
 import path = require('path');
-import fs from 'fs';
+import fs from 'fs-extra';
 import sgMail from '@sendgrid/mail';
 import EmailerSendObject from '@/interfaces/EmailerSendObject';
 import nunjucks from 'nunjucks';
@@ -29,6 +29,46 @@ class Emailer {
     return await this.sendTo(messageObject);
   }
 
+  public getLogFileNames (): Promise<string[]> {
+    return new Promise((resolve, reject) => {
+      fs.readdir(global.OPENAPI_NODEGEN_EMAILER_SETTINGS.logPath, function (err, files) {
+        if (err) {
+          console.error('Unable to scan directory: ' + global.OPENAPI_NODEGEN_EMAILER_SETTINGS.logPath);
+          return reject(err);
+        }
+        return resolve(files);
+      });
+    });
+  }
+
+  public getLatestLogFileData (): Promise<any> {
+    return new Promise(async (resolve, reject) => {
+      fs.readJSON(
+        path.join(
+          global.OPENAPI_NODEGEN_EMAILER_SETTINGS.logPath,
+          (await this.getLogFileNames()).pop(),
+        ),
+        (err, json) => {
+          if (err) {
+            return reject(err);
+          }
+          return resolve(json);
+        });
+    });
+  }
+
+  public removeAllEmailJsonLogFiles (): Promise<boolean> {
+    return new Promise((resolve, reject) => {
+      fs.emptyDir(global.OPENAPI_NODEGEN_EMAILER_SETTINGS.logPath, (err) => {
+        if (err) {
+          console.error('There was an error clearing the log folder');
+          return reject(err);
+        }
+        return resolve(true);
+      });
+    });
+  }
+
   private hasBeenInitialized () {
     return !(global.OPENAPI_NODEGEN_EMAILER_SETTINGS === undefined);
   }
@@ -36,7 +76,7 @@ class Emailer {
   private calculateLogFilePath (tplRelPath: string) {
     return path.join(
       global.OPENAPI_NODEGEN_EMAILER_SETTINGS.logPath,
-      tplRelPath + new Date().getTime() + '.json',
+      new Date().getTime() + tplRelPath + '.json',
     );
   }
 

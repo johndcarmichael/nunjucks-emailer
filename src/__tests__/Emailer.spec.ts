@@ -91,8 +91,9 @@ describe('Setup, render and return object correctly', () => {
 
   it('should calculate the correct file path', () => {
     const fullPath = Emailer['calculateLogFilePath']('welcome');
-    const regex = /\/welcome\d{13,18}\.json/;
+    const regex = /\/\d{13,18}welcome\.json/;
     const pattern = RegExp(regex);
+    console.log(fullPath);
     expect(pattern.test(fullPath.replace(logPath, ''))).toBe(true);
   });
 
@@ -105,14 +106,7 @@ describe('Setup, render and return object correctly', () => {
       templateGlobalObject,
     });
     await Emailer.send({ to, from, subject, tplObject, tplRelativePath });
-    const recursive = require('recursive-readdir-sync');
-    // read the dir and get the latest file name in the dir
-    const files = recursive(logPath);
-    expect(
-      JSON.parse(
-        fs.readFileSync(files.pop(), 'utf8'),
-      ),
-    ).toEqual(expectedObject);
+    expect(await Emailer.getLatestLogFileData()).toEqual(expectedObject);
   });
 
   it('should throw an error on bad log directory', async (done) => {
@@ -141,5 +135,47 @@ describe('Setup, render and return object correctly', () => {
     });
     const logFile = await Emailer.send({ to, from, subject, tplObject, tplRelativePath });
     expect(fs.existsSync(logFile)).toBe(true);
+  });
+
+  it('should throw error and not be able a non json file', async (done) => {
+    fs.writeFileSync(
+      path.join(global.OPENAPI_NODEGEN_EMAILER_SETTINGS.logPath, '999999999999.json'),
+      'this is not json',
+    );
+    try {
+      await Emailer.getLatestLogFileData();
+      done('Should have thrown an error');
+    } catch (e) {
+      done();
+    }
+  });
+
+  it('We should currently have 3 files written to disc', async () => {
+    expect((await Emailer.getLogFileNames()).length).toBe(3);
+  });
+
+  it('should be able to empty log directory', async () => {
+    await Emailer.removeAllEmailJsonLogFiles();
+    expect((await Emailer.getLogFileNames()).length).toBe(0);
+  });
+
+  it('should throw error and not be able to scan non-existent directory', async (done) => {
+    global.OPENAPI_NODEGEN_EMAILER_SETTINGS.logPath = '/non-existent-path';
+    try {
+      await Emailer.getLogFileNames();
+      done('Should have thrown an error');
+    } catch (e) {
+      done();
+    }
+  });
+
+  it('should throw error and not be empty non-existent directory', async (done) => {
+    global.OPENAPI_NODEGEN_EMAILER_SETTINGS.logPath = '/non-existent-path';
+    try {
+      await Emailer.removeAllEmailJsonLogFiles();
+      done('Should have thrown an error');
+    } catch (e) {
+      done();
+    }
   });
 });

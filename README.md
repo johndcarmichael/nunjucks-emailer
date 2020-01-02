@@ -146,6 +146,17 @@ emailerSetupSync({ sendType: EmailerSendTypes.log });
 
 Then continue to use the package as normal. As the typescript server has the domain layer abstracted from the http layer, you can now write the business logic in a domain method as above and then unit test without mocking or sending out actual emails.
 
+To assist, there are 2 public helper functions in the Emailer class to fetch log files:
+```typescript
+// Will return a numeric array of file names
+const fileNames = await Emailer.getLogFileNames();
+// Will return the last email object written to disc
+const fileJson = await Emailer.getLatestLogFileData();
+// Will clear directory of json email logs (most helpful when writing tests the app which uses this class)
+await Emailer.removeAllEmailJsonLogFiles();
+```
+
+
 ## Setup sync & async
 Depending on the design of your system, you may be ok or not ok with using a blocking form of the setup emailerSetupSync. Typically if you are only setting up at 1 point in the app this is a not a problem, but if you are dynamically changing on the fly, you should use `emailerSetupAsync`, it does the same job but asynchronously and returns a promise. See the "should initialise correctly" test in "Emailer.spec.ts" file.
 

@@ -1,6 +1,6 @@
 {
   "name": "openapi-nodegen-emailer",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "Send emails via simple template pattern.",
   "licence": "MIT",
   "main": "./build/index.js",
