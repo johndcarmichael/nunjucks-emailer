@@ -15,9 +15,12 @@ var tplObject = {
     name: 'John'
 };
 var tplRelativePath = 'welcome';
-var templateGlobalObject = {
-    globalNumber: '123.123.654'
-};
+function GlobalObject() {
+    this.globalNumber = '123.123.654';
+}
+GlobalObject.prototype.age = 25;
+// @ts-ignore
+var templateGlobalObject = new GlobalObject();
 var expectedObject = {
     from: from,
     html: "<p>Welcome John</p>\n<p>" + templateGlobalObject.globalNumber + "</p>\n",
@@ -194,7 +197,7 @@ describe('Setup, render and return object correctly', function () {
             switch (_a.label) {
                 case 0:
                     index_1.emailerSetupSync({
-                        sendType: EmailerSendTypes_1.EmailerSendTypes.log,
+                        sendType: EmailerSendTypes_1.EmailerSendTypes.file,
                         templatePath: path_1["default"].join(process.cwd(), 'src/__tests__/templates'),
                         logPath: logPath,
                         fallbackFrom: fallbackFrom,
@@ -296,6 +299,60 @@ describe('Setup, render and return object correctly', function () {
                     return [3 /*break*/, 4];
                 case 3:
                     e_7 = _a.sent();
+                    done();
+                    return [3 /*break*/, 4];
+                case 4: return [2 /*return*/];
+            }
+        });
+    }); });
+    it('should console log', function () { return tslib_1.__awaiter(void 0, void 0, void 0, function () {
+        var _a;
+        return tslib_1.__generator(this, function (_b) {
+            switch (_b.label) {
+                case 0:
+                    index_1.emailerSetupSync({
+                        sendType: EmailerSendTypes_1.EmailerSendTypes.log,
+                        templatePath: path_1["default"].join(process.cwd(), 'src/__tests__/templates'),
+                        logPath: logPath,
+                        fallbackFrom: fallbackFrom,
+                        templateGlobalObject: templateGlobalObject
+                    });
+                    return [4 /*yield*/, index_1.Emailer.send({ to: to, from: from, subject: subject, tplObject: tplObject, tplRelativePath: tplRelativePath })];
+                case 1:
+                    _b.sent();
+                    // todo write in jest fn to check use of console log.
+                    _a = expect;
+                    return [4 /*yield*/, index_1.Emailer.getLogFileNames()];
+                case 2:
+                    // todo write in jest fn to check use of console log.
+                    _a.apply(void 0, [(_b.sent()).length]).toBe(0);
+                    return [2 /*return*/];
+            }
+        });
+    }); });
+    it('should console error as no api key set', function (done) { return tslib_1.__awaiter(void 0, void 0, void 0, function () {
+        var e_8;
+        return tslib_1.__generator(this, function (_a) {
+            switch (_a.label) {
+                case 0:
+                    index_1.emailerSetupSync({
+                        sendType: EmailerSendTypes_1.EmailerSendTypes.sendgrid,
+                        templatePath: path_1["default"].join(process.cwd(), 'src/__tests__/templates'),
+                        logPath: logPath,
+                        fallbackFrom: fallbackFrom,
+                        templateGlobalObject: templateGlobalObject
+                    });
+                    _a.label = 1;
+                case 1:
+                    _a.trys.push([1, 3, , 4]);
+                    return [4 /*yield*/, index_1.Emailer.send({ to: to, from: from, subject: subject, tplRelativePath: tplRelativePath })];
+                case 2:
+                    _a.sent();
+                    done('should have thrown error as sendgrid not setup');
+                    return [3 /*break*/, 4];
+                case 3:
+                    e_8 = _a.sent();
+                    expect(e_8.response.body.errors[0].message).toBe('Permission denied, wrong credentials');
                     done();
                     return [3 /*break*/, 4];
                 case 4: return [2 /*return*/];

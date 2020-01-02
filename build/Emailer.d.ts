@@ -8,6 +8,7 @@ declare class Emailer {
     private calculateLogFilePath;
     private renderTemplate;
     private sendTo;
+    private writeFile;
 }
 declare const _default: Emailer;
 export default _default;

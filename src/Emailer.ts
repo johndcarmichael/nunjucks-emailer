@@ -103,23 +103,26 @@ class Emailer {
     const sendObjectWithGlobals = Object.assign(sendObject, {
       tplGlobalObject: global.OPENAPI_NODEGEN_EMAILER_SETTINGS.tplGlobalObject,
     });
-    return new Promise((resolve) => {
-      switch (global.OPENAPI_NODEGEN_EMAILER_SETTINGS.sendType) {
+
+    switch (global.OPENAPI_NODEGEN_EMAILER_SETTINGS.sendType) {
         case EmailerSendTypes.sendgrid:
           sgMail.setApiKey(process.env.SENDGRID_API_KEY);
-          return resolve(sgMail.send(sendObjectWithGlobals));
+          return sgMail.send(sendObjectWithGlobals);
         case EmailerSendTypes.return:
-          return resolve(sendObjectWithGlobals);
+          return sendObjectWithGlobals;
         case EmailerSendTypes.log:
-          console.log(sendObjectWithGlobals);
-        // don't break here as log and file should write log to disk.
+          return console.log(sendObjectWithGlobals);
         case EmailerSendTypes.file:
-          const filePath = this.calculateLogFilePath(sendObject.tplRelativePath);
-          fs.writeFile(filePath, JSON.stringify(sendObjectWithGlobals), 'utf8', () => {
-            return resolve(filePath);
-          });
-          break;
+          return await this.writeFile(sendObject.tplRelativePath, sendObjectWithGlobals);
       }
+  }
+
+  private writeFile (tplRelativePath: string, object: any) {
+    return new Promise((resolve) => {
+      const filePath = this.calculateLogFilePath(tplRelativePath);
+      fs.writeFile(filePath, JSON.stringify(object), 'utf8', () => {
+        return resolve(filePath);
+      });
     });
   }
 }

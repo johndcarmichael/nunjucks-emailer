@@ -114,30 +114,39 @@ var Emailer = /** @class */ (function () {
     };
     Emailer.prototype.sendTo = function (sendObject) {
         return tslib_1.__awaiter(this, void 0, void 0, function () {
-            var sendObjectWithGlobals;
-            var _this = this;
-            return tslib_1.__generator(this, function (_a) {
-                sendObjectWithGlobals = Object.assign(sendObject, {
-                    tplGlobalObject: global.OPENAPI_NODEGEN_EMAILER_SETTINGS.tplGlobalObject
-                });
-                return [2 /*return*/, new Promise(function (resolve) {
-                        switch (global.OPENAPI_NODEGEN_EMAILER_SETTINGS.sendType) {
-                            case EmailerSendTypes_1.EmailerSendTypes.sendgrid:
-                                mail_1["default"].setApiKey(process.env.SENDGRID_API_KEY);
-                                return resolve(mail_1["default"].send(sendObjectWithGlobals));
-                            case EmailerSendTypes_1.EmailerSendTypes["return"]:
-                                return resolve(sendObjectWithGlobals);
-                            case EmailerSendTypes_1.EmailerSendTypes.log:
-                                console.log(sendObjectWithGlobals);
-                            // don't break here as log and file should write log to disk.
-                            case EmailerSendTypes_1.EmailerSendTypes.file:
-                                var filePath_1 = _this.calculateLogFilePath(sendObject.tplRelativePath);
-                                fs_extra_1["default"].writeFile(filePath_1, JSON.stringify(sendObjectWithGlobals), 'utf8', function () {
-                                    return resolve(filePath_1);
-                                });
-                                break;
+            var sendObjectWithGlobals, _a;
+            return tslib_1.__generator(this, function (_b) {
+                switch (_b.label) {
+                    case 0:
+                        sendObjectWithGlobals = Object.assign(sendObject, {
+                            tplGlobalObject: global.OPENAPI_NODEGEN_EMAILER_SETTINGS.tplGlobalObject
+                        });
+                        _a = global.OPENAPI_NODEGEN_EMAILER_SETTINGS.sendType;
+                        switch (_a) {
+                            case EmailerSendTypes_1.EmailerSendTypes.sendgrid: return [3 /*break*/, 1];
+                            case EmailerSendTypes_1.EmailerSendTypes["return"]: return [3 /*break*/, 2];
+                            case EmailerSendTypes_1.EmailerSendTypes.log: return [3 /*break*/, 3];
+                            case EmailerSendTypes_1.EmailerSendTypes.file: return [3 /*break*/, 4];
                         }
-                    })];
+                        return [3 /*break*/, 6];
+                    case 1:
+                        mail_1["default"].setApiKey(process.env.SENDGRID_API_KEY);
+                        return [2 /*return*/, mail_1["default"].send(sendObjectWithGlobals)];
+                    case 2: return [2 /*return*/, sendObjectWithGlobals];
+                    case 3: return [2 /*return*/, console.log(sendObjectWithGlobals)];
+                    case 4: return [4 /*yield*/, this.writeFile(sendObject.tplRelativePath, sendObjectWithGlobals)];
+                    case 5: return [2 /*return*/, _b.sent()];
+                    case 6: return [2 /*return*/];
+                }
+            });
+        });
+    };
+    Emailer.prototype.writeFile = function (tplRelativePath, object) {
+        var _this = this;
+        return new Promise(function (resolve) {
+            var filePath = _this.calculateLogFilePath(tplRelativePath);
+            fs_extra_1["default"].writeFile(filePath, JSON.stringify(object), 'utf8', function () {
+                return resolve(filePath);
             });
         });
     };

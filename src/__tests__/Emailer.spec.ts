@@ -13,9 +13,13 @@ const tplObject = {
   name: 'John',
 };
 const tplRelativePath = 'welcome';
-const templateGlobalObject = {
-  globalNumber: '123.123.654',
-};
+function GlobalObject () {
+  this.globalNumber = '123.123.654';
+}
+GlobalObject.prototype.age = 25;
+// @ts-ignore
+const templateGlobalObject = new GlobalObject();
+
 const expectedObject = {
   from: from,
   html: `<p>Welcome John</p>
@@ -127,7 +131,7 @@ describe('Setup, render and return object correctly', () => {
 
   it('Should write file to disk', async () => {
     emailerSetupSync({
-      sendType: EmailerSendTypes.log,
+      sendType: EmailerSendTypes.file,
       templatePath: path.join(process.cwd(), 'src/__tests__/templates'),
       logPath,
       fallbackFrom,
@@ -175,6 +179,36 @@ describe('Setup, render and return object correctly', () => {
       await Emailer.removeAllEmailJsonLogFiles();
       done('Should have thrown an error');
     } catch (e) {
+      done();
+    }
+  });
+
+  it('should console log', async () => {
+    emailerSetupSync({
+      sendType: EmailerSendTypes.log,
+      templatePath: path.join(process.cwd(), 'src/__tests__/templates'),
+      logPath: logPath,
+      fallbackFrom,
+      templateGlobalObject,
+    });
+    await Emailer.send({ to, from, subject, tplObject, tplRelativePath });
+    // todo write in jest fn to check use of console log.
+    expect((await Emailer.getLogFileNames()).length).toBe(0);
+  });
+
+  it('should console error as no api key set', async (done) => {
+    emailerSetupSync({
+      sendType: EmailerSendTypes.sendgrid,
+      templatePath: path.join(process.cwd(), 'src/__tests__/templates'),
+      logPath: logPath,
+      fallbackFrom,
+      templateGlobalObject,
+    });
+    try {
+      await Emailer.send({ to, from, subject, tplRelativePath });
+      done('should have thrown error as sendgrid not setup');
+    } catch (e) {
+      expect(e.response.body.errors[0].message).toBe('Permission denied, wrong credentials');
       done();
     }
   });
