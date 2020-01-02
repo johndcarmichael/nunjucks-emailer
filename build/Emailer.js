@@ -2,7 +2,7 @@
 exports.__esModule = true;
 var tslib_1 = require("tslib");
 var path = require("path");
-var fs_1 = tslib_1.__importDefault(require("fs"));
+var fs_extra_1 = tslib_1.__importDefault(require("fs-extra"));
 var mail_1 = tslib_1.__importDefault(require("@sendgrid/mail"));
 var nunjucks_1 = tslib_1.__importDefault(require("nunjucks"));
 var EmailerSendTypes_1 = require("./enums/EmailerSendTypes");
@@ -38,17 +38,63 @@ var Emailer = /** @class */ (function () {
             });
         });
     };
+    Emailer.prototype.getLogFileNames = function () {
+        return new Promise(function (resolve, reject) {
+            fs_extra_1["default"].readdir(global.OPENAPI_NODEGEN_EMAILER_SETTINGS.logPath, function (err, files) {
+                if (err) {
+                    console.error('Unable to scan directory: ' + global.OPENAPI_NODEGEN_EMAILER_SETTINGS.logPath);
+                    return reject(err);
+                }
+                return resolve(files);
+            });
+        });
+    };
+    Emailer.prototype.getLatestLogFileData = function () {
+        var _this = this;
+        return new Promise(function (resolve, reject) { return tslib_1.__awaiter(_this, void 0, void 0, function () {
+            var _a, _b, _c, _d, _e;
+            return tslib_1.__generator(this, function (_f) {
+                switch (_f.label) {
+                    case 0:
+                        _b = (_a = fs_extra_1["default"]).readJSON;
+                        _d = (_c = path).join;
+                        _e = [global.OPENAPI_NODEGEN_EMAILER_SETTINGS.logPath];
+                        return [4 /*yield*/, this.getLogFileNames()];
+                    case 1:
+                        _b.apply(_a, [_d.apply(_c, _e.concat([(_f.sent()).pop()])),
+                            function (err, json) {
+                                if (err) {
+                                    return reject(err);
+                                }
+                                return resolve(json);
+                            }]);
+                        return [2 /*return*/];
+                }
+            });
+        }); });
+    };
+    Emailer.prototype.removeAllEmailJsonLogFiles = function () {
+        return new Promise(function (resolve, reject) {
+            fs_extra_1["default"].emptyDir(global.OPENAPI_NODEGEN_EMAILER_SETTINGS.logPath, function (err) {
+                if (err) {
+                    console.error('There was an error clearing the log folder');
+                    return reject(err);
+                }
+                return resolve(true);
+            });
+        });
+    };
     Emailer.prototype.hasBeenInitialized = function () {
         return !(global.OPENAPI_NODEGEN_EMAILER_SETTINGS === undefined);
     };
     Emailer.prototype.calculateLogFilePath = function (tplRelPath) {
-        return path.join(global.OPENAPI_NODEGEN_EMAILER_SETTINGS.logPath, tplRelPath + new Date().getTime() + '.json');
+        return path.join(global.OPENAPI_NODEGEN_EMAILER_SETTINGS.logPath, new Date().getTime() + tplRelPath + '.json');
     };
     Emailer.prototype.renderTemplate = function (fullTemplatePath, templateObject) {
         return tslib_1.__awaiter(this, void 0, void 0, function () {
             return tslib_1.__generator(this, function (_a) {
                 return [2 /*return*/, new Promise(function (resolve, reject) {
-                        fs_1["default"].readFile(fullTemplatePath, 'utf8', function (err, data) {
+                        fs_extra_1["default"].readFile(fullTemplatePath, 'utf8', function (err, data) {
                             if (err) {
                                 return reject(err);
                             }
@@ -86,7 +132,7 @@ var Emailer = /** @class */ (function () {
                             // don't break here as log and file should write log to disk.
                             case EmailerSendTypes_1.EmailerSendTypes.file:
                                 var filePath_1 = _this.calculateLogFilePath(sendObject.tplRelativePath);
-                                fs_1["default"].writeFile(filePath_1, JSON.stringify(sendObjectWithGlobals), 'utf8', function () {
+                                fs_extra_1["default"].writeFile(filePath_1, JSON.stringify(sendObjectWithGlobals), 'utf8', function () {
                                     return resolve(filePath_1);
                                 });
                                 break;

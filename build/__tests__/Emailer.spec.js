@@ -132,14 +132,15 @@ describe('Setup, render and return object correctly', function () {
     }); });
     it('should calculate the correct file path', function () {
         var fullPath = index_1.Emailer['calculateLogFilePath']('welcome');
-        var regex = /\/welcome\d{13,18}\.json/;
+        var regex = /\/\d{13,18}welcome\.json/;
         var pattern = RegExp(regex);
+        console.log(fullPath);
         expect(pattern.test(fullPath.replace(logPath, ''))).toBe(true);
     });
     it('should write to file', function () { return tslib_1.__awaiter(void 0, void 0, void 0, function () {
-        var recursive, files;
-        return tslib_1.__generator(this, function (_a) {
-            switch (_a.label) {
+        var _a;
+        return tslib_1.__generator(this, function (_b) {
+            switch (_b.label) {
                 case 0:
                     index_1.emailerSetupSync({
                         sendType: EmailerSendTypes_1.EmailerSendTypes.file,
@@ -150,10 +151,11 @@ describe('Setup, render and return object correctly', function () {
                     });
                     return [4 /*yield*/, index_1.Emailer.send({ to: to, from: from, subject: subject, tplObject: tplObject, tplRelativePath: tplRelativePath })];
                 case 1:
-                    _a.sent();
-                    recursive = require('recursive-readdir-sync');
-                    files = recursive(logPath);
-                    expect(JSON.parse(fs_extra_1["default"].readFileSync(files.pop(), 'utf8'))).toEqual(expectedObject);
+                    _b.sent();
+                    _a = expect;
+                    return [4 /*yield*/, index_1.Emailer.getLatestLogFileData()];
+                case 2:
+                    _a.apply(void 0, [_b.sent()]).toEqual(expectedObject);
                     return [2 /*return*/];
             }
         });
@@ -203,6 +205,100 @@ describe('Setup, render and return object correctly', function () {
                     logFile = _a.sent();
                     expect(fs_extra_1["default"].existsSync(logFile)).toBe(true);
                     return [2 /*return*/];
+            }
+        });
+    }); });
+    it('should throw error and not be able a non json file', function (done) { return tslib_1.__awaiter(void 0, void 0, void 0, function () {
+        var e_5;
+        return tslib_1.__generator(this, function (_a) {
+            switch (_a.label) {
+                case 0:
+                    fs_extra_1["default"].writeFileSync(path_1["default"].join(global.OPENAPI_NODEGEN_EMAILER_SETTINGS.logPath, '999999999999.json'), 'this is not json');
+                    _a.label = 1;
+                case 1:
+                    _a.trys.push([1, 3, , 4]);
+                    return [4 /*yield*/, index_1.Emailer.getLatestLogFileData()];
+                case 2:
+                    _a.sent();
+                    done('Should have thrown an error');
+                    return [3 /*break*/, 4];
+                case 3:
+                    e_5 = _a.sent();
+                    done();
+                    return [3 /*break*/, 4];
+                case 4: return [2 /*return*/];
+            }
+        });
+    }); });
+    it('We should currently have 3 files written to disc', function () { return tslib_1.__awaiter(void 0, void 0, void 0, function () {
+        var _a;
+        return tslib_1.__generator(this, function (_b) {
+            switch (_b.label) {
+                case 0:
+                    _a = expect;
+                    return [4 /*yield*/, index_1.Emailer.getLogFileNames()];
+                case 1:
+                    _a.apply(void 0, [(_b.sent()).length]).toBe(3);
+                    return [2 /*return*/];
+            }
+        });
+    }); });
+    it('should be able to empty log directory', function () { return tslib_1.__awaiter(void 0, void 0, void 0, function () {
+        var _a;
+        return tslib_1.__generator(this, function (_b) {
+            switch (_b.label) {
+                case 0: return [4 /*yield*/, index_1.Emailer.removeAllEmailJsonLogFiles()];
+                case 1:
+                    _b.sent();
+                    _a = expect;
+                    return [4 /*yield*/, index_1.Emailer.getLogFileNames()];
+                case 2:
+                    _a.apply(void 0, [(_b.sent()).length]).toBe(0);
+                    return [2 /*return*/];
+            }
+        });
+    }); });
+    it('should throw error and not be able to scan non-existent directory', function (done) { return tslib_1.__awaiter(void 0, void 0, void 0, function () {
+        var e_6;
+        return tslib_1.__generator(this, function (_a) {
+            switch (_a.label) {
+                case 0:
+                    global.OPENAPI_NODEGEN_EMAILER_SETTINGS.logPath = '/non-existent-path';
+                    _a.label = 1;
+                case 1:
+                    _a.trys.push([1, 3, , 4]);
+                    return [4 /*yield*/, index_1.Emailer.getLogFileNames()];
+                case 2:
+                    _a.sent();
+                    done('Should have thrown an error');
+                    return [3 /*break*/, 4];
+                case 3:
+                    e_6 = _a.sent();
+                    done();
+                    return [3 /*break*/, 4];
+                case 4: return [2 /*return*/];
+            }
+        });
+    }); });
+    it('should throw error and not be empty non-existent directory', function (done) { return tslib_1.__awaiter(void 0, void 0, void 0, function () {
+        var e_7;
+        return tslib_1.__generator(this, function (_a) {
+            switch (_a.label) {
+                case 0:
+                    global.OPENAPI_NODEGEN_EMAILER_SETTINGS.logPath = '/non-existent-path';
+                    _a.label = 1;
+                case 1:
+                    _a.trys.push([1, 3, , 4]);
+                    return [4 /*yield*/, index_1.Emailer.removeAllEmailJsonLogFiles()];
+                case 2:
+                    _a.sent();
+                    done('Should have thrown an error');
+                    return [3 /*break*/, 4];
+                case 3:
+                    e_7 = _a.sent();
+                    done();
+                    return [3 /*break*/, 4];
+                case 4: return [2 /*return*/];
             }
         });
     }); });
