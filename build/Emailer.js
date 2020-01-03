@@ -114,29 +114,36 @@ var Emailer = /** @class */ (function () {
     };
     Emailer.prototype.sendTo = function (sendObject) {
         return tslib_1.__awaiter(this, void 0, void 0, function () {
-            var sendObjectWithGlobals, _a;
-            return tslib_1.__generator(this, function (_b) {
-                switch (_b.label) {
+            var sendObjectWithGlobals, _a, _b;
+            return tslib_1.__generator(this, function (_c) {
+                switch (_c.label) {
                     case 0:
                         sendObjectWithGlobals = Object.assign(sendObject, {
                             tplGlobalObject: global.OPENAPI_NODEGEN_EMAILER_SETTINGS.tplGlobalObject
                         });
                         _a = global.OPENAPI_NODEGEN_EMAILER_SETTINGS.sendType;
                         switch (_a) {
-                            case EmailerSendTypes_1.EmailerSendTypes.sendgrid: return [3 /*break*/, 1];
-                            case EmailerSendTypes_1.EmailerSendTypes["return"]: return [3 /*break*/, 2];
-                            case EmailerSendTypes_1.EmailerSendTypes.log: return [3 /*break*/, 3];
-                            case EmailerSendTypes_1.EmailerSendTypes.file: return [3 /*break*/, 4];
+                            case EmailerSendTypes_1.EmailerSendTypes.log: return [3 /*break*/, 1];
+                            case EmailerSendTypes_1.EmailerSendTypes.file: return [3 /*break*/, 2];
+                            case EmailerSendTypes_1.EmailerSendTypes.sendgrid: return [3 /*break*/, 4];
                         }
                         return [3 /*break*/, 6];
                     case 1:
+                        console.log(sendObjectWithGlobals);
+                        return [3 /*break*/, 6];
+                    case 2:
+                        _b = sendObjectWithGlobals;
+                        return [4 /*yield*/, this.writeFile(sendObject.tplRelativePath, sendObjectWithGlobals)];
+                    case 3:
+                        _b.loggedFilePath = _c.sent();
+                        return [3 /*break*/, 6];
+                    case 4:
                         mail_1["default"].setApiKey(process.env.SENDGRID_API_KEY);
-                        return [2 /*return*/, mail_1["default"].send(sendObjectWithGlobals)];
-                    case 2: return [2 /*return*/, sendObjectWithGlobals];
-                    case 3: return [2 /*return*/, console.log(sendObjectWithGlobals)];
-                    case 4: return [4 /*yield*/, this.writeFile(sendObject.tplRelativePath, sendObjectWithGlobals)];
-                    case 5: return [2 /*return*/, _b.sent()];
-                    case 6: return [2 /*return*/];
+                        return [4 /*yield*/, mail_1["default"].send(sendObjectWithGlobals)];
+                    case 5:
+                        _c.sent();
+                        _c.label = 6;
+                    case 6: return [2 /*return*/, sendObjectWithGlobals];
                 }
             });
         });

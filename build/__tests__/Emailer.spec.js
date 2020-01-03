@@ -206,7 +206,7 @@ describe('Setup, render and return object correctly', function () {
                     return [4 /*yield*/, index_1.Emailer.send({ to: to, from: from, subject: subject, tplObject: tplObject, tplRelativePath: tplRelativePath })];
                 case 1:
                     logFile = _a.sent();
-                    expect(fs_extra_1["default"].existsSync(logFile)).toBe(true);
+                    expect(fs_extra_1["default"].existsSync(logFile.loggedFilePath)).toBe(true);
                     return [2 /*return*/];
             }
         });

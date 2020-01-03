@@ -1,8 +1,9 @@
 import EmailerSend from "./interfaces/EmailerSend";
+import EmailerSendObjectWithGlobals from "./interfaces/EmailerSendObjectWithGlobals";
 declare class Emailer {
-    send(emailerSend: EmailerSend): Promise<any>;
+    send(emailerSend: EmailerSend): Promise<EmailerSendObjectWithGlobals>;
     getLogFileNames(): Promise<string[]>;
-    getLatestLogFileData(): Promise<any>;
+    getLatestLogFileData(): Promise<EmailerSendObjectWithGlobals>;
     removeAllEmailJsonLogFiles(): Promise<boolean>;
     private hasBeenInitialized;
     private calculateLogFilePath;

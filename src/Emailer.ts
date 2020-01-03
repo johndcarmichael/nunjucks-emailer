@@ -5,9 +5,10 @@ import EmailerSendObject from '@/interfaces/EmailerSendObject';
 import nunjucks from 'nunjucks';
 import { EmailerSendTypes } from '@/enums/EmailerSendTypes';
 import EmailerSend from '@/interfaces/EmailerSend';
+import EmailerSendObjectWithGlobals from '@/interfaces/EmailerSendObjectWithGlobals';
 
 class Emailer {
-  public async send (emailerSend: EmailerSend): Promise<any> {
+  public async send (emailerSend: EmailerSend): Promise<EmailerSendObjectWithGlobals> {
     if (!this.hasBeenInitialized()) {
       throw new Error('You must first call EmailerSetup before using the Emailer class.');
     }
@@ -41,7 +42,7 @@ class Emailer {
     });
   }
 
-  public getLatestLogFileData (): Promise<any> {
+  public getLatestLogFileData (): Promise<EmailerSendObjectWithGlobals> {
     return new Promise(async (resolve, reject) => {
       fs.readJSON(
         path.join(
@@ -69,11 +70,11 @@ class Emailer {
     });
   }
 
-  private hasBeenInitialized () {
+  private hasBeenInitialized (): boolean {
     return !(global.OPENAPI_NODEGEN_EMAILER_SETTINGS === undefined);
   }
 
-  private calculateLogFilePath (tplRelPath: string) {
+  private calculateLogFilePath (tplRelPath: string): string {
     return path.join(
       global.OPENAPI_NODEGEN_EMAILER_SETTINGS.logPath,
       new Date().getTime() + tplRelPath + '.json',
@@ -99,25 +100,25 @@ class Emailer {
     });
   }
 
-  private async sendTo (sendObject: EmailerSendObject) {
-    const sendObjectWithGlobals = Object.assign(sendObject, {
+  private async sendTo (sendObject: EmailerSendObject): Promise<EmailerSendObjectWithGlobals> {
+    const sendObjectWithGlobals: EmailerSendObjectWithGlobals = Object.assign(sendObject, {
       tplGlobalObject: global.OPENAPI_NODEGEN_EMAILER_SETTINGS.tplGlobalObject,
     });
-
     switch (global.OPENAPI_NODEGEN_EMAILER_SETTINGS.sendType) {
-        case EmailerSendTypes.sendgrid:
-          sgMail.setApiKey(process.env.SENDGRID_API_KEY);
-          return sgMail.send(sendObjectWithGlobals);
-        case EmailerSendTypes.return:
-          return sendObjectWithGlobals;
-        case EmailerSendTypes.log:
-          return console.log(sendObjectWithGlobals);
-        case EmailerSendTypes.file:
-          return await this.writeFile(sendObject.tplRelativePath, sendObjectWithGlobals);
-      }
+      case EmailerSendTypes.log:
+        console.log(sendObjectWithGlobals);
+        break;
+      case EmailerSendTypes.file:
+        sendObjectWithGlobals.loggedFilePath = await this.writeFile(sendObject.tplRelativePath, sendObjectWithGlobals);
+        break;
+      case EmailerSendTypes.sendgrid:
+        sgMail.setApiKey(process.env.SENDGRID_API_KEY);
+        await sgMail.send(sendObjectWithGlobals);
+    }
+    return sendObjectWithGlobals;
   }
 
-  private writeFile (tplRelativePath: string, object: any) {
+  private writeFile (tplRelativePath: string, object: EmailerSendObjectWithGlobals): Promise<string> {
     return new Promise((resolve) => {
       const filePath = this.calculateLogFilePath(tplRelativePath);
       fs.writeFile(filePath, JSON.stringify(object), 'utf8', () => {

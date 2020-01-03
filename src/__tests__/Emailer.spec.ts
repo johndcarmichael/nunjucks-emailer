@@ -138,7 +138,7 @@ describe('Setup, render and return object correctly', () => {
       templateGlobalObject,
     });
     const logFile = await Emailer.send({ to, from, subject, tplObject, tplRelativePath });
-    expect(fs.existsSync(logFile)).toBe(true);
+    expect(fs.existsSync(logFile.loggedFilePath)).toBe(true);
   });
 
   it('should throw error and not be able a non json file', async (done) => {
