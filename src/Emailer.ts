@@ -6,19 +6,24 @@ import nunjucks from 'nunjucks';
 import { EmailerSendTypes } from '@/enums/EmailerSendTypes';
 import EmailerSend from '@/interfaces/EmailerSend';
 import EmailerSendObjectWithGlobals from '@/interfaces/EmailerSendObjectWithGlobals';
+import getSubjectFromHtml from '@/utils/getSubjectFromHtml';
 
 class Emailer {
-  public async send (emailerSend: EmailerSend): Promise<EmailerSendObjectWithGlobals> {
+  async send (emailerSend: EmailerSend): Promise<EmailerSendObjectWithGlobals> {
     if (!this.hasBeenInitialized()) {
       throw new Error('You must first call EmailerSetup before using the Emailer class.');
     }
+    const HTMLString = await this.renderTemplate(
+      path.join(global.OPENAPI_NODEGEN_EMAILER_SETTINGS.tplPath, emailerSend.tplRelativePath + '.html.njk'),
+      emailerSend.tplObject,
+    );
+    // try and get the subject line from the HTML email template
+    const subjectFromHtmlSring = getSubjectFromHtml(HTMLString);
+    // prep the message object
     const messageObject = {
       from: emailerSend.from || global.OPENAPI_NODEGEN_EMAILER_SETTINGS.fallbackFrom,
-      html: await this.renderTemplate(
-        path.join(global.OPENAPI_NODEGEN_EMAILER_SETTINGS.tplPath, emailerSend.tplRelativePath + '.html.njk'),
-        emailerSend.tplObject,
-      ),
-      subject: emailerSend.subject,
+      html: HTMLString,
+      subject: emailerSend.subject || subjectFromHtmlSring || global.OPENAPI_NODEGEN_EMAILER_SETTINGS.fallbackSubject,
       text: await this.renderTemplate(
         path.join(global.OPENAPI_NODEGEN_EMAILER_SETTINGS.tplPath, emailerSend.tplRelativePath + '.txt.njk'),
         emailerSend.tplObject,
@@ -30,7 +35,7 @@ class Emailer {
     return await this.sendTo(messageObject);
   }
 
-  public getLogFileNames (): Promise<string[]> {
+  getLogFileNames (): Promise<string[]> {
     return new Promise((resolve, reject) => {
       fs.readdir(global.OPENAPI_NODEGEN_EMAILER_SETTINGS.logPath, function (err, files) {
         if (err) {
@@ -42,7 +47,7 @@ class Emailer {
     });
   }
 
-  public getLatestLogFileData (): Promise<EmailerSendObjectWithGlobals> {
+  getLatestLogFileData (): Promise<EmailerSendObjectWithGlobals> {
     return new Promise(async (resolve, reject) => {
       fs.readJSON(
         path.join(
@@ -58,7 +63,7 @@ class Emailer {
     });
   }
 
-  public removeAllEmailJsonLogFiles (): Promise<boolean> {
+  removeAllEmailJsonLogFiles (): Promise<boolean> {
     return new Promise((resolve, reject) => {
       fs.emptyDir(global.OPENAPI_NODEGEN_EMAILER_SETTINGS.logPath, (err) => {
         if (err) {
@@ -70,18 +75,18 @@ class Emailer {
     });
   }
 
-  private hasBeenInitialized (): boolean {
+  hasBeenInitialized (): boolean {
     return !(global.OPENAPI_NODEGEN_EMAILER_SETTINGS === undefined);
   }
 
-  private calculateLogFilePath (tplRelPath: string): string {
+  calculateLogFilePath (tplRelPath: string): string {
     return path.join(
       global.OPENAPI_NODEGEN_EMAILER_SETTINGS.logPath,
       new Date().getTime() + tplRelPath + '.json',
     );
   }
 
-  private async renderTemplate (fullTemplatePath: string, templateObject?: any): Promise<string> {
+  async renderTemplate (fullTemplatePath: string, templateObject?: any): Promise<string> {
     return new Promise((resolve, reject) => {
       fs.readFile(fullTemplatePath, 'utf8', (err, data) => {
         if (err) {
@@ -100,7 +105,7 @@ class Emailer {
     });
   }
 
-  private async sendTo (sendObject: EmailerSendObject): Promise<EmailerSendObjectWithGlobals> {
+  async sendTo (sendObject: EmailerSendObject): Promise<EmailerSendObjectWithGlobals> {
     const sendObjectWithGlobals: EmailerSendObjectWithGlobals = Object.assign(sendObject, {
       tplGlobalObject: global.OPENAPI_NODEGEN_EMAILER_SETTINGS.tplGlobalObject,
     });
@@ -118,10 +123,13 @@ class Emailer {
     return sendObjectWithGlobals;
   }
 
-  private writeFile (tplRelativePath: string, object: EmailerSendObjectWithGlobals): Promise<string> {
-    return new Promise((resolve) => {
+  writeFile (tplRelativePath: string, object: EmailerSendObjectWithGlobals): Promise<string> {
+    return new Promise((resolve, reject) => {
       const filePath = this.calculateLogFilePath(tplRelativePath);
-      fs.writeFile(filePath, JSON.stringify(object), 'utf8', () => {
+      fs.writeFile(filePath, JSON.stringify(object), 'utf8', (err) => {
+        if (err) {
+          return reject(err);
+        }
         return resolve(filePath);
       });
     });

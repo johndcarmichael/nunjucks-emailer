@@ -1,5 +1,5 @@
 export interface TplObject {
-  [name: string]: string | object;
+  [name: string]: string | any;
 }
 export default interface EmailerSendObject {
   from: string;

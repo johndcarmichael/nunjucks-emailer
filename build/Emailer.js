@@ -6,25 +6,28 @@ var fs_extra_1 = tslib_1.__importDefault(require("fs-extra"));
 var mail_1 = tslib_1.__importDefault(require("@sendgrid/mail"));
 var nunjucks_1 = tslib_1.__importDefault(require("nunjucks"));
 var EmailerSendTypes_1 = require("./enums/EmailerSendTypes");
+var getSubjectFromHtml_1 = tslib_1.__importDefault(require("./utils/getSubjectFromHtml"));
 var Emailer = /** @class */ (function () {
     function Emailer() {
     }
     Emailer.prototype.send = function (emailerSend) {
         return tslib_1.__awaiter(this, void 0, void 0, function () {
-            var messageObject, _a;
+            var HTMLString, subjectFromHtmlSring, messageObject, _a;
             return tslib_1.__generator(this, function (_b) {
                 switch (_b.label) {
                     case 0:
                         if (!this.hasBeenInitialized()) {
                             throw new Error('You must first call EmailerSetup before using the Emailer class.');
                         }
-                        _a = {
-                            from: emailerSend.from || global.OPENAPI_NODEGEN_EMAILER_SETTINGS.fallbackFrom
-                        };
                         return [4 /*yield*/, this.renderTemplate(path.join(global.OPENAPI_NODEGEN_EMAILER_SETTINGS.tplPath, emailerSend.tplRelativePath + '.html.njk'), emailerSend.tplObject)];
                     case 1:
-                        _a.html = _b.sent(),
-                            _a.subject = emailerSend.subject;
+                        HTMLString = _b.sent();
+                        subjectFromHtmlSring = getSubjectFromHtml_1["default"](HTMLString);
+                        _a = {
+                            from: emailerSend.from || global.OPENAPI_NODEGEN_EMAILER_SETTINGS.fallbackFrom,
+                            html: HTMLString,
+                            subject: emailerSend.subject || subjectFromHtmlSring || global.OPENAPI_NODEGEN_EMAILER_SETTINGS.fallbackSubject
+                        };
                         return [4 /*yield*/, this.renderTemplate(path.join(global.OPENAPI_NODEGEN_EMAILER_SETTINGS.tplPath, emailerSend.tplRelativePath + '.txt.njk'), emailerSend.tplObject)];
                     case 2:
                         messageObject = (_a.text = _b.sent(),
@@ -150,9 +153,12 @@ var Emailer = /** @class */ (function () {
     };
     Emailer.prototype.writeFile = function (tplRelativePath, object) {
         var _this = this;
-        return new Promise(function (resolve) {
+        return new Promise(function (resolve, reject) {
             var filePath = _this.calculateLogFilePath(tplRelativePath);
-            fs_extra_1["default"].writeFile(filePath, JSON.stringify(object), 'utf8', function () {
+            fs_extra_1["default"].writeFile(filePath, JSON.stringify(object), 'utf8', function (err) {
+                if (err) {
+                    return reject(err);
+                }
                 return resolve(filePath);
             });
         });

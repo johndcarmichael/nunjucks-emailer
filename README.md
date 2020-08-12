@@ -33,7 +33,7 @@ Automatically pickout html and text file based on a the fie structure, see below
   - `emailerSetupAsync(options)`
 - Lastly, call the [Emailer send method](https://github.com/johndcarmichael/openapi-nodegen-emailer/blob/master/src/Emailer.ts#L9), see below.
 
-## Setup options explained
+## Setup options explained and default values
 ```typescript
 export enum EmailerSendTypes {
   sendgrid = 'SENDGRID', // will only send to sendgrid
@@ -47,11 +47,12 @@ export default interface EmailerConstructor {
   sendType: EmailerSendTypes; // This dictates what happens when Emailer.send is called values from the above enum
   logPath?: string; // Dictates where the emails are written to disk: EmailerSendTypes.file, defaults to email/logs
   fallbackFrom: string; // The from email used when no from email provided, typically a system email address, eg "no-reply@myawesome.app"
+  fallbackSubject: string; // If not subject is provided or found this is the fallback
 }
 ```
 
-## Example openapi-nodegen-typescript-server
-Setup the emailer in the [app.ts](https://github.com/acrontum/openapi-nodegen-typescript-server/blob/master/src/app.ts) by adding:
+## Example setup and use
+Setup the emailer in the entry file eg: [app.ts](https://github.com/acrontum/openapi-nodegen-typescript-server/blob/master/src/app.ts):
 ```typescript
 import { emailerSetupSync, EmailerSendTypes } from 'openapi-nodegen-emailer';
 
@@ -86,26 +87,19 @@ The default path for the templates relative to the base of the server:
 path.join(process.cwd(), 'email/templates')
 ```
 
+## Email Subject
+As mentioned above you have the subject fallback should one not be provided to `Emailer.send`, but the subject can also be written into the email HTML template:
 
-## Example General Usage in a single file
-```typescript
-import { Emailer, emailerSetupSync, EmailerSendTypes } from 'openapi-nodegen-emailer';
+```
+<p>Welcome {{ name }}</p>
+<p>{{ globalNumber }}</p>
+<subject>{{ name }} Welcome to this app</subject>
+```
 
-emailerSetupSync({
-  sendType: EmailerSendTypes.file,
-  fallbackFrom: 'no-reply@myapp.com',
-});
+This allows for encapsulating content in the template and also dynamic subjects.
 
-Emailer.send({
-  to: 'john@john.com',
-  subject: 'Welcome to the app John!', 
-  tplObject: {name: 'John'}, 
-  tplRelativePath: 'welcome'
-})
-.catch((err) => {
-  console.error(err)
-})
-``` 
+With no subject in the `Emailer.send` params, and no subject tag in the HTML template.. then the tool will use the fallback. 
+
 
 ## Global variables (common dynamic content)
 To inject say, a company telephone number into an email, you would likely want to grab this from a managed source instead of changing hardcoded emails all the time, or injecting the common content to every email tplObject.. gets fairly repetitive quite quickly.

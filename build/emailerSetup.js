@@ -8,6 +8,7 @@ exports["default"] = (function (emailerConstructor) {
         tplGlobalObject: emailerConstructor.templateGlobalObject || {},
         sendType: emailerConstructor.sendType,
         logPath: emailerConstructor.logPath || path_1["default"].join(process.cwd(), 'email/logs'),
-        fallbackFrom: emailerConstructor.fallbackFrom
+        fallbackFrom: emailerConstructor.fallbackFrom,
+        fallbackSubject: emailerConstructor.fallbackSubject
     };
 });
