@@ -80,7 +80,7 @@ As mentioned above you have the subject fallback should one not be provided to `
 ```
 <p>Welcome {{ name }}</p>
 <p>{{ globalNumber }}</p>
-<subject>{{ name }} Welcome to this app</subject>
+<nunjuck-email-subject text="{{name}} welcome to this app"></nunjuck-email-subject>
 ```
 
 This allows for encapsulating content in the template and also dynamic subjects.

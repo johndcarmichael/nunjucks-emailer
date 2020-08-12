@@ -1,0 +1,4 @@
+# ignored to prevent git reset when switching branch to code
+node_modules
+build
+coverage
