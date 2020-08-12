@@ -7,20 +7,6 @@ Automatically pickout html and text file based on a the fie structure, see below
 > New providers are welcomed, please create a pull request. This was built for use with sendgrid and unit testing domain methods.
 > Additionally, language ability will be coming at some point, unless someone gets a pr in there 1st :) Someting like welcome.en.html.njk
 
-<!-- START doctoc generated TOC please keep comment here to allow auto update -->
-<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
-**Table of Contents**  *generated with [DocToc](https://github.com/thlorenz/doctoc)*
-
-- [How it works](#how-it-works)
-- [Setup options explained and default values](#setup-options-explained-and-default-values)
-- [Example setup and use](#example-setup-and-use)
-- [Email Subject](#email-subject)
-- [Global variables (common dynamic content)](#global-variables-common-dynamic-content)
-- [Unit test example](#unit-test-example)
-- [Setup sync & async](#setup-sync--async)
-
-<!-- END doctoc generated TOC please keep comment here to allow auto update -->
-
 ## How it works
 The email template files are kept in a separate folder to the rest of the source code of your app. Your app uses this package, this package loads templates based on the provided templatePath at setup.
 

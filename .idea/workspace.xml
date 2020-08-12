@@ -20,62 +20,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="e71ab4eb-f507-4fa9-9e28-1d969320f3c1" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/images/tpl-folders.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/index.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.editorconfig" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.eslintrc.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gitmessage" beforeDir="false" afterPath="$PROJECT_DIR$/.nojekyll" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.npmignore" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.travis.yml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/CODE_OF_CONDUCT.md" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/CONTRIBUTING.md" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/LICENSE" beforeDir="false" afterPath="$PROJECT_DIR$/LICENCE" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/Emailer.d.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/Emailer.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/__tests__/Emailer.spec.d.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/__tests__/Emailer.spec.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/emailerSetup.d.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/emailerSetup.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/emailerSetupAsync.d.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/emailerSetupAsync.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/emailerSetupSync.d.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/emailerSetupSync.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/enums/EmailerSendTypes.d.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/enums/EmailerSendTypes.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/index.d.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/index.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/interfaces/EmailerContructor.d.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/interfaces/EmailerContructor.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/interfaces/EmailerSend.d.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/interfaces/EmailerSend.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/interfaces/EmailerSendObject.d.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/interfaces/EmailerSendObject.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/interfaces/EmailerSendObjectWithGlobals.d.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/interfaces/EmailerSendObjectWithGlobals.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/githooks/pre-commit" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/githooks/pre-rebase" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/jest.config.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/package-lock.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Emailer.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/__tests__/Emailer.spec.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/__tests__/templates/subjectTest.html.njk" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/__tests__/templates/welcome.html.njk" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/__tests__/templates/welcome.txt.njk" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/emailerSetup.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/emailerSetupAsync.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/emailerSetupSync.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/enums/EmailerSendTypes.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/index.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/interfaces/EmailerContructor.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/interfaces/EmailerSend.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/interfaces/EmailerSendObject.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/interfaces/EmailerSendObjectWithGlobals.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/types/global.d.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/utils/getSubjectFromHtml.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/tsconfig.json" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -131,7 +76,7 @@
       <updated>1597224733858</updated>
       <workItem from="1597224734949" duration="3484000" />
       <workItem from="1597228575821" duration="674000" />
-      <workItem from="1597251481092" duration="744000" />
+      <workItem from="1597251481092" duration="815000" />
     </task>
     <servers />
   </component>
