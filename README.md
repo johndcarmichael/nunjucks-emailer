@@ -1,7 +1,4 @@
-
-[![License](http://img.shields.io/npm/l/boats.svg)](https://github.com/johndcarmichael/openapi-nodegen-emailer/blob/master/LICENSE) | [![Dependencies](https://david-dm.org/johndcarmichael/openapi-nodegen-emailer.svg)](https://david-dm.org/johndcarmichael/openapi-nodegen-emailer) | [![Codecov Coverage](https://img.shields.io/codecov/c/github/johndcarmichael/openapi-nodegen-emailer/master.svg?style=flat-square)](https://codecov.io/gh/johndcarmichael/openapi-nodegen-emailer/) | [![Build Status](https://api.travis-ci.org/johndcarmichael/openapi-nodegen-emailer.svg?branch=master)](https://travis-ci.org/johndcarmichael/openapi-nodegen-emailer)
-
-# openapi-nodegen-emailer
+# nunjucks-emailer
 
 Write email templates with Nunjucks in independent html and text files, send with SendGrid or log to console &/or disk or simply return the email object for other use.
 
@@ -16,7 +13,7 @@ Automatically pickout html and text file based on a the fie structure, see below
 
 - [How it works](#how-it-works)
 - [Setup options explained](#setup-options-explained)
-- [Example openapi-nodegen-typescript-server](#example-openapi-nodegen-typescript-server)
+- [Example nunjucks-typescript-server](#example-nunjucks-typescript-server)
 - [Example General Usage in a single file](#example-general-usage-in-a-single-file)
 - [Global variables (common dynamic content)](#global-variables-common-dynamic-content)
 - [Unit test example](#unit-test-example)
@@ -28,10 +25,10 @@ Automatically pickout html and text file based on a the fie structure, see below
 - You should write a html and txt version of an email within a nunjucks file, eg:
   - email/templates/welcome.html.njk
   - email/templates/welcome.text.njk
-- You should setup the emailer package with an [EmailerConstructor](https://github.com/johndcarmichael/openapi-nodegen-emailer/blob/master/src/interfaces/EmailerContructor.ts) object which will also `fs.ensureDir[Sync]` the log directory:
+- You should setup the emailer package with an [EmailerConstructor](https://github.com/johndcarmichael/nunjucks-emailer/blob/master/src/interfaces/EmailerContructor.ts) object which will also `fs.ensureDir[Sync]` the log directory:
   - `emailerSetupSync(options)`
   - `emailerSetupAsync(options)`
-- Lastly, call the [Emailer send method](https://github.com/johndcarmichael/openapi-nodegen-emailer/blob/master/src/Emailer.ts#L9), see below.
+- Lastly, call the [Emailer send method](https://github.com/johndcarmichael/nunjucks-emailer/blob/master/src/Emailer.ts#L9), see below.
 
 ## Setup options explained and default values
 ```typescript
@@ -52,9 +49,9 @@ export default interface EmailerConstructor {
 ```
 
 ## Example setup and use
-Setup the emailer in the entry file eg: [app.ts](https://github.com/acrontum/openapi-nodegen-typescript-server/blob/master/src/app.ts):
+Setup the emailer in the entry file eg: [app.ts](https://github.com/acrontum/nunjucks-typescript-server/blob/master/src/app.ts):
 ```typescript
-import { emailerSetupSync, EmailerSendTypes } from 'openapi-nodegen-emailer';
+import { emailerSetupSync, EmailerSendTypes } from 'nunjucks-emailer';
 
 emailerSetupSync({ 
   sendType: EmailerSendTypes.sendgrid,
@@ -62,7 +59,7 @@ emailerSetupSync({
 });
 ```
 
-Use the emailer in another file in your app now without having to call setup each time, eg in a [domain method](https://github.com/acrontum/openapi-nodegen-typescript-server/blob/master/src/domains/___stub.ts.njk):
+Use the emailer in another file in your app now without having to call setup each time, eg in a [domain method](https://github.com/acrontum/nunjucks-typescript-server/blob/master/src/domains/___stub.ts.njk):
 ```typescript
 class RegisterDomain {
   public async registerEmailPost (body: RegisterEmailPost, req: any): Promise<Login> {
@@ -106,7 +103,7 @@ To inject say, a company telephone number into an email, you would likely want t
 
 Add to the setup:
 ```typescript
-import { Emailer, emailerSetupSync, EmailerSendTypes } from 'openapi-nodegen-emailer';
+import { Emailer, emailerSetupSync, EmailerSendTypes } from 'nunjucks-emailer';
 
 emailerSetupSync({
   sendType: EmailerSendTypes.file,
@@ -130,7 +127,7 @@ The global object is also logged and returned from the dens function.
 
 ## Unit test example
 
-Check the source code of this package: [src/__tests__/Emailer.spec.ts](https://github.com/johndcarmichael/openapi-nodegen-emailer/blob/master/src/__tests__/Emailer.ts)
+Check the source code of this package: [src/__tests__/Emailer.spec.ts](https://github.com/johndcarmichael/nunjucks-emailer/blob/master/src/__tests__/Emailer.ts)
 
 As it is possible to return the prepared object from this tool it makes it possible to unit test a domain method very easily, just run the setup and instruct to write to file, log or return the object, eg:
 
