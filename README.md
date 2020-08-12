@@ -12,9 +12,9 @@ Automatically pickout html and text file based on a the fie structure, see below
 **Table of Contents**  *generated with [DocToc](https://github.com/thlorenz/doctoc)*
 
 - [How it works](#how-it-works)
-- [Setup options explained](#setup-options-explained)
-- [Example nunjucks-typescript-server](#example-nunjucks-typescript-server)
-- [Example General Usage in a single file](#example-general-usage-in-a-single-file)
+- [Setup options explained and default values](#setup-options-explained-and-default-values)
+- [Example setup and use](#example-setup-and-use)
+- [Email Subject](#email-subject)
 - [Global variables (common dynamic content)](#global-variables-common-dynamic-content)
 - [Unit test example](#unit-test-example)
 - [Setup sync & async](#setup-sync--async)
@@ -22,13 +22,17 @@ Automatically pickout html and text file based on a the fie structure, see below
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
 ## How it works
-- You should write a html and txt version of an email within a nunjucks file, eg:
-  - email/templates/welcome.html.njk
-  - email/templates/welcome.text.njk
-- You should setup the emailer package with an [EmailerConstructor](https://github.com/johndcarmichael/nunjucks-emailer/blob/master/src/interfaces/EmailerContructor.ts) object which will also `fs.ensureDir[Sync]` the log directory:
+The email template files are kept in a separate folder to the rest of the source code of your app. Your app uses this package, this package loads templates based on the provided templatePath at setup.
+
+You should write html AND txt versions of each email you want to send, your folder structure might look like this:
+
+![Settings panel](./images/tpl-folders.png)
+
+You should setup the emailer package with an [EmailerConstructor](https://github.com/johndcarmichael/nunjucks-emailer/blob/master/src/interfaces/EmailerContructor.ts) object which will also `fs.ensureDir[Sync]` the log directory:
   - `emailerSetupSync(options)`
   - `emailerSetupAsync(options)`
-- Lastly, call the [Emailer send method](https://github.com/johndcarmichael/nunjucks-emailer/blob/master/src/Emailer.ts#L9), see below.
+
+Lastly, call the [Emailer send method](https://github.com/johndcarmichael/nunjucks-emailer/blob/master/src/Emailer.ts#L9), see below.
 
 ## Setup options explained and default values
 ```typescript
