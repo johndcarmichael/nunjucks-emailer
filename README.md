@@ -76,14 +76,23 @@ path.join(process.cwd(), 'email/templates')
 
 ## Email Subject
 As mentioned above you have the subject fallback should one not be provided to `Emailer.send`, but the subject can also be written into the email HTML template:
-
 ```
 <p>Welcome {{ name }}</p>
 <p>{{ globalNumber }}</p>
 <nunjuck-email-subject text="{{name}} welcome to this app"></nunjuck-email-subject>
 ```
 
-This allows for encapsulating content in the template and also dynamic subjects.
+Then used like this:
+```
+await Emailer.send({
+  to: 'john@john.com',
+  from: 'bob@bob.com', 
+  tplObject: {name: 'John'}, 
+  tplRelativePath: 'welcome'
+})
+```
+
+This allows for encapsulating all copy content in the template - instead of some in the typescript code and some in the template code.
 
 With no subject in the `Emailer.send` params, and no subject tag in the HTML template.. then the tool will use the fallback. 
 
