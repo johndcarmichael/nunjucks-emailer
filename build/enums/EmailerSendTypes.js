@@ -1,5 +1,6 @@
 "use strict";
 exports.__esModule = true;
+exports.EmailerSendTypes = void 0;
 var EmailerSendTypes;
 (function (EmailerSendTypes) {
     EmailerSendTypes["sendgrid"] = "SENDGRID";

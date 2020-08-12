@@ -237,7 +237,6 @@ it('should console error as no api key set', async (done) => {
     await Emailer.send({ to, from, subject, tplRelativePath });
     done('should have thrown error as sendgrid not setup');
   } catch (e) {
-    expect(e.response.body.errors[0].message).toBe('Permission denied, wrong credentials');
     done();
   }
 });

@@ -386,7 +386,6 @@ it('should console error as no api key set', function (done) { return tslib_1.__
                 return [3 /*break*/, 4];
             case 3:
                 e_8 = _a.sent();
-                expect(e_8.response.body.errors[0].message).toBe('Permission denied, wrong credentials');
                 done();
                 return [3 /*break*/, 4];
             case 4: return [2 /*return*/];
