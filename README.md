@@ -12,7 +12,7 @@ The email template files are kept in a separate folder to the rest of the source
 
 You should write html AND txt versions of each email you want to send, your folder structure might look like this:
 
-![Settings panel](./images/tpl-folders.png)
+![Settings panel](./images/tpl-folder.png)
 
 You should setup the emailer package with an [EmailerConstructor](https://github.com/johndcarmichael/nunjucks-emailer/blob/master/src/interfaces/EmailerContructor.ts) object which will also `fs.ensureDir[Sync]` the log directory:
   - `emailerSetupSync(options)`
