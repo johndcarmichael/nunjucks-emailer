@@ -1,6 +1,7 @@
 import { EmailerSendTypes } from "../enums/EmailerSendTypes";
+import { EmailData } from "./EmailerSend";
 export default interface EmailerConstructor {
-    fallbackFrom: string;
+    fallbackFrom: EmailData;
     fallbackSubject: string;
     logPath?: string;
     sendType: EmailerSendTypes;
