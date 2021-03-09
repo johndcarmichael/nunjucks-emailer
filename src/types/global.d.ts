@@ -10,7 +10,7 @@ declare namespace NodeJS {
       tplGlobalObject: any,
       sendType: string,
       logPath: string,
-      fallbackFrom: string,
+      fallbackFrom: any,
       fallbackSubject: string
     };
   }

@@ -19,6 +19,7 @@ class Emailer {
     );
     // try and get the subject line from the HTML email template
     const subjectFromHtmlSring = getSubjectFromHtml(HTMLString);
+
     // prep the message object
     const messageObject = {
       from: emailerSend.from || global.OPENAPI_NODEGEN_EMAILER_SETTINGS.fallbackFrom,
@@ -92,15 +93,23 @@ class Emailer {
         if (err) {
           return reject(err);
         }
-        const env = nunjucks.configure({
+        nunjucks.configure({
           autoescape: false,
         });
+        const env = new nunjucks.Environment(
+          new nunjucks.FileSystemLoader(global.OPENAPI_NODEGEN_EMAILER_SETTINGS.tplPath)
+        );
         for (const key in global.OPENAPI_NODEGEN_EMAILER_SETTINGS.tplGlobalObject) {
           if (global.OPENAPI_NODEGEN_EMAILER_SETTINGS.tplGlobalObject.hasOwnProperty(key)) {
             env.addGlobal(key, global.OPENAPI_NODEGEN_EMAILER_SETTINGS.tplGlobalObject[key]);
           }
         }
-        resolve(nunjucks.renderString(data, templateObject || {}));
+        resolve(
+          env.renderString(
+            data,
+            templateObject || {}
+          )
+        );
       });
     });
   }

@@ -102,15 +102,16 @@ var Emailer = /** @class */ (function () {
                             if (err) {
                                 return reject(err);
                             }
-                            var env = nunjucks_1["default"].configure({
+                            nunjucks_1["default"].configure({
                                 autoescape: false
                             });
+                            var env = new nunjucks_1["default"].Environment(new nunjucks_1["default"].FileSystemLoader(global.OPENAPI_NODEGEN_EMAILER_SETTINGS.tplPath));
                             for (var key in global.OPENAPI_NODEGEN_EMAILER_SETTINGS.tplGlobalObject) {
                                 if (global.OPENAPI_NODEGEN_EMAILER_SETTINGS.tplGlobalObject.hasOwnProperty(key)) {
                                     env.addGlobal(key, global.OPENAPI_NODEGEN_EMAILER_SETTINGS.tplGlobalObject[key]);
                                 }
                             }
-                            resolve(nunjucks_1["default"].renderString(data, templateObject || {}));
+                            resolve(env.renderString(data, templateObject || {}));
                         });
                     })];
             });
