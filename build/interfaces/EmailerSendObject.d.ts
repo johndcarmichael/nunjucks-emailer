@@ -1,12 +1,13 @@
+import { EmailData } from "./EmailerSend";
 export interface TplObject {
     [name: string]: string | any;
 }
 export default interface EmailerSendObject {
-    from: string;
+    from: EmailData;
     html: string;
     subject: string;
     text: string;
-    to: string;
+    to: EmailData;
     tplObject: TplObject;
     tplRelativePath: string;
 }

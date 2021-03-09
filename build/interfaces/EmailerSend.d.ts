@@ -1,7 +1,11 @@
+export declare type EmailData = string | {
+    name?: string;
+    email: string;
+};
 export default interface EmailerSend {
-    to: string;
+    to: EmailData;
     tplRelativePath: string;
-    from?: string;
+    from?: EmailData;
     subject?: string;
     tplObject?: any;
 }

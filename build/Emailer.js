@@ -12,7 +12,8 @@ var Emailer = /** @class */ (function () {
     }
     Emailer.prototype.send = function (emailerSend) {
         return tslib_1.__awaiter(this, void 0, void 0, function () {
-            var HTMLString, subjectFromHtmlSring, messageObject, _a;
+            var HTMLString, subjectFromHtmlSring, messageObject;
+            var _a;
             return tslib_1.__generator(this, function (_b) {
                 switch (_b.label) {
                     case 0:
