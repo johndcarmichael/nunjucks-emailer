@@ -1,6 +1,7 @@
 import path = require('path');
 import fs from 'fs-extra';
 import sgMail from '@sendgrid/mail';
+import inlineCss from 'inline-css';
 import EmailerSendObject from '@/interfaces/EmailerSendObject';
 import nunjucks from 'nunjucks';
 import { EmailerSendTypes } from '@/enums/EmailerSendTypes';
@@ -13,18 +14,24 @@ class Emailer {
     if (!this.hasBeenInitialized()) {
       throw new Error('You must first call EmailerSetup before using the Emailer class.');
     }
-    const HTMLString = await this.renderTemplate(
-      path.join(global.OPENAPI_NODEGEN_EMAILER_SETTINGS.tplPath, emailerSend.tplRelativePath + '.html.njk'),
+    const config = global.OPENAPI_NODEGEN_EMAILER_SETTINGS;
+    let HTMLString = await this.renderTemplate(
+      path.join(config.tplPath, emailerSend.tplRelativePath + '.html.njk'),
       emailerSend.tplObject,
     );
     // try and get the subject line from the HTML email template
-    const subjectFromHtmlSring = getSubjectFromHtml(HTMLString);
+    const subjectFromHtmlString = getSubjectFromHtml(HTMLString);
+
+    if (config.makeCssInline) {
+      const cssInlineOpts = config.makeCssInlineOptions || {};
+      HTMLString = await inlineCss(HTMLString, cssInlineOpts);
+    }
 
     // prep the message object
     const messageObject = {
       from: emailerSend.from || global.OPENAPI_NODEGEN_EMAILER_SETTINGS.fallbackFrom,
       html: HTMLString,
-      subject: emailerSend.subject || subjectFromHtmlSring || global.OPENAPI_NODEGEN_EMAILER_SETTINGS.fallbackSubject,
+      subject: emailerSend.subject || subjectFromHtmlString || global.OPENAPI_NODEGEN_EMAILER_SETTINGS.fallbackSubject,
       text: await this.renderTemplate(
         path.join(global.OPENAPI_NODEGEN_EMAILER_SETTINGS.tplPath, emailerSend.tplRelativePath + '.txt.njk'),
         emailerSend.tplObject,

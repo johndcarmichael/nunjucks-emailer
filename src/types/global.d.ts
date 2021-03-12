@@ -6,12 +6,14 @@
 declare namespace NodeJS {
   export interface Global {
     OPENAPI_NODEGEN_EMAILER_SETTINGS: {
-      tplPath: string,
-      tplGlobalObject: any,
-      sendType: string,
-      logPath: string,
       fallbackFrom: any,
       fallbackSubject: string
+      makeCssInline: boolean,
+      makeCssInlineOptions: any,
+      logPath: string,
+      sendType: string,
+      tplGlobalObject: any,
+      tplPath: string,
     };
   }
 }
