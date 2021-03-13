@@ -4,6 +4,7 @@ var tslib_1 = require("tslib");
 var path = require("path");
 var fs_extra_1 = tslib_1.__importDefault(require("fs-extra"));
 var mail_1 = tslib_1.__importDefault(require("@sendgrid/mail"));
+var inline_css_1 = tslib_1.__importDefault(require("inline-css"));
 var nunjucks_1 = tslib_1.__importDefault(require("nunjucks"));
 var EmailerSendTypes_1 = require("./enums/EmailerSendTypes");
 var getSubjectFromHtml_1 = tslib_1.__importDefault(require("./utils/getSubjectFromHtml"));
@@ -12,7 +13,7 @@ var Emailer = /** @class */ (function () {
     }
     Emailer.prototype.send = function (emailerSend) {
         return tslib_1.__awaiter(this, void 0, void 0, function () {
-            var HTMLString, subjectFromHtmlSring, messageObject;
+            var config, HTMLString, subjectFromHtmlString, cssInlineOpts, messageObject;
             var _a;
             return tslib_1.__generator(this, function (_b) {
                 switch (_b.label) {
@@ -20,24 +21,32 @@ var Emailer = /** @class */ (function () {
                         if (!this.hasBeenInitialized()) {
                             throw new Error('You must first call EmailerSetup before using the Emailer class.');
                         }
-                        return [4 /*yield*/, this.renderTemplate(path.join(global.OPENAPI_NODEGEN_EMAILER_SETTINGS.tplPath, emailerSend.tplRelativePath + '.html.njk'), emailerSend.tplObject)];
+                        config = global.OPENAPI_NODEGEN_EMAILER_SETTINGS;
+                        return [4 /*yield*/, this.renderTemplate(path.join(config.tplPath, emailerSend.tplRelativePath + '.html.njk'), emailerSend.tplObject)];
                     case 1:
                         HTMLString = _b.sent();
-                        subjectFromHtmlSring = getSubjectFromHtml_1["default"](HTMLString);
+                        subjectFromHtmlString = getSubjectFromHtml_1["default"](HTMLString);
+                        if (!config.makeCssInline) return [3 /*break*/, 3];
+                        cssInlineOpts = config.makeCssInlineOptions || {};
+                        return [4 /*yield*/, inline_css_1["default"](HTMLString, cssInlineOpts)];
+                    case 2:
+                        HTMLString = _b.sent();
+                        _b.label = 3;
+                    case 3:
                         _a = {
                             from: emailerSend.from || global.OPENAPI_NODEGEN_EMAILER_SETTINGS.fallbackFrom,
                             html: HTMLString,
-                            subject: emailerSend.subject || subjectFromHtmlSring || global.OPENAPI_NODEGEN_EMAILER_SETTINGS.fallbackSubject
+                            subject: emailerSend.subject || subjectFromHtmlString || global.OPENAPI_NODEGEN_EMAILER_SETTINGS.fallbackSubject
                         };
                         return [4 /*yield*/, this.renderTemplate(path.join(global.OPENAPI_NODEGEN_EMAILER_SETTINGS.tplPath, emailerSend.tplRelativePath + '.txt.njk'), emailerSend.tplObject)];
-                    case 2:
+                    case 4:
                         messageObject = (_a.text = _b.sent(),
                             _a.to = emailerSend.to,
                             _a.tplObject = emailerSend.tplObject || {},
                             _a.tplRelativePath = emailerSend.tplRelativePath,
                             _a);
                         return [4 /*yield*/, this.sendTo(messageObject)];
-                    case 3: return [2 /*return*/, _b.sent()];
+                    case 5: return [2 /*return*/, _b.sent()];
                 }
             });
         });
